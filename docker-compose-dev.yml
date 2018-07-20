@@ -11,7 +11,7 @@ services:
     command: ["npm", "start"]
     volumes:
       - ./utask/frontend:/app/frontend
-      - ./utask/frontend/node-modules:/app/frontend/node_modules
+      - ./utask/frontend/node_modules:/app/frontend/node_modules
     ports:
       - "3000:3000"
 
