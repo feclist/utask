@@ -2,6 +2,7 @@ FROM node
 
 WORKDIR /app/frontend
 COPY package.json /app/frontend
+ADD . ./
 
 RUN npm install
 
