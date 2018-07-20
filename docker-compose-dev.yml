@@ -5,11 +5,19 @@ services:
     image: postgres
     ports:
       - "5432:5432"
-  django:
-    build: ./api
-    command: ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+
+  node:
+    build: ./utask/frontend
     volumes:
-      - ./api:/app/api
+      - ./utask/frontend:/app/frontend
+      - ./utask/frontend/node-modules:/app/frontend/node_modules
+    ports:
+      - "3000:3000"
+
+  django:
+    build: .
+    volumes:
+      - .:/code
     ports:
       - "8000:8000"
     depends_on:

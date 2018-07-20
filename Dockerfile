@@ -5,14 +5,23 @@ RUN apt-get update \
         postgresql-client \
     && rm -rf /var/lib/apt/lists/*
 
+
 ENV PYTHONUNBUFFERED 1
 RUN mkdir /code
 WORKDIR /code
+
 ADD requirements.txt /code/
+
+RUN useradd -ms /bin/bash -d /code utask
 RUN pip install -r requirements.txt
+
 ADD . /code/
 
-COPY start.sh /start.sh
+COPY start.sh ./
+
+RUN chown -R utask /code
+RUN chmod +x /code/start.sh
+
 
 EXPOSE 8000
-CMD ["/start.sh"]
+ENTRYPOINT ["sh", "/code/start.sh"]
