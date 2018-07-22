@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'utask',
     'rest_framework',
     'frontend',
+    'api'
 ]
 
 MIDDLEWARE = [
