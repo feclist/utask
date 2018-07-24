@@ -1,3 +1,5 @@
 Django==2.0.7
 djangorestframework==3.8.2
 psycopg2==2.7.4
+python-decouple==3.1
+-e git+git://github.com/feclist/ost-kit-python.git@master#egg=ost-kit-python

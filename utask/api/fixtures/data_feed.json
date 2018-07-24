@@ -302,7 +302,7 @@
     "pk": 1,
     "fields": {
       "user": 1,
-      "wallet_id": "User%2024"
+      "ost_id": "2331b41e-7f19-407f-92b2-d0f461562bb1"
     }
   },
   {
@@ -311,7 +311,7 @@
     "fields": {
       "created_time": "2018-07-22T21:59:56.707Z",
       "end_time": "2018-07-22T22:04:59.413Z",
-      "summary": "test",
+      "description": "test",
       "reward": 5.0,
       "title": "Test task",
       "type": "Anon",

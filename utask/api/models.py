@@ -7,7 +7,7 @@ from django import utils
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    wallet_id = models.TextField(blank=True)
+    ost_id = models.TextField(blank=True)
 
 
 @receiver(post_save, sender=User)
@@ -24,7 +24,7 @@ def save_user_profile(sender, instance, **kwargs):
 class Task(models.Model):
     created_time = models.DateTimeField(default=utils.timezone.now)
     end_time = models.DateTimeField()
-    summary = models.TextField(blank=True)
+    description = models.TextField(blank=True)
     reward = models.FloatField(blank=True)
     title = models.TextField()
     type = models.TextField()
