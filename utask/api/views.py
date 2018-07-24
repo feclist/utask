@@ -11,7 +11,7 @@ from decouple import config
 from ost_kit_python import OSTKit
 
 
-class TaskListCreate(generics.ListCreateAPIView):
+class TaskViewSet(viewsets.ModelViewSet):
     queryset = Task.objects.all()
     serializer_class = TaskSerializer
 
