@@ -4,6 +4,8 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django import utils
 
+from api.utils import flatten_query_set
+
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -30,9 +32,17 @@ class Task(models.Model):
     type = models.TextField()
     total_cost = models.IntegerField()
     amount = models.IntegerField()
+    active = models.BooleanField(default=True)
 
     user = models.ForeignKey(User, on_delete=models.DO_NOTHING)
     completions = models.ManyToManyField(User, related_name='completions')
+
+
+@receiver(post_save, sender=Task)
+def task_save_check(sender, instance, **kwargs):
+    if instance.amount == len(flatten_query_set(instance.completions)) and instance.active:
+        instance.active = False
+        instance.save()
 
 
 class LiveTask(models.Model):
