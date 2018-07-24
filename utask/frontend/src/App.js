@@ -23,38 +23,12 @@ const styles = theme => ({
   button: {
     margin: theme.spacing.unit
   },
-  modalButton: {
-    margin: theme.spacing.unit,
-    marginTop: theme.spacing.unit * 3,
-    width: 250
-  },
   title: {
     fontSize: 36,
     fontFamily: 'Shree714',
     background: '-webkit-linear-gradient(293deg, #f171ab, #f35f5f)',
     '-webkit-background-clip': 'text',
     '-webkit-text-fill-color': 'transparent'
-  },
-  modalPaper: {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    padding: 40,
-    borderTop: '5px solid #f171ab',
-    outline: 'none'
-  },
-  modalContent: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center'
-  },
-  formContainer: {
-    display: 'flex',
-    flexDirection: 'column'
-  },
-  textField: {
-    width: 250
   },
   '@font-face': {
     fontFamily: 'Shree714',
