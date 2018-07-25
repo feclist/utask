@@ -1,6 +1,6 @@
 from api.models import Task, LiveTask
 from api.serializers import TaskSerializer, UserSerializer, LiveTaskSerializer
-from rest_framework import viewsets, status
+from rest_framework import viewsets, status, permissions
 from rest_framework.response import Response
 from rest_framework.decorators import action
 
@@ -17,19 +17,18 @@ from api.utils import flatten_query_set
 class TaskViewSet(viewsets.ModelViewSet):
     queryset = Task.objects.all()
     serializer_class = TaskSerializer
+    permission_classes = (permissions.IsAuthenticated,)
 
     @action(methods=['get'], detail=True)
     def start_task(self, request, pk=None):
         task = self.get_object()
-        # TODO: Implement auth in order to use request.user instead of gross hardcode
-        user = User.objects.get(pk=6)
+        user = request.user
 
         # Check if the user didn't already finish this task
         if task.completions.filter(pk=user.pk).exists():
             return Response({'message': 'You already finished this task, you cannot do it again'},
                             status=status.HTTP_409_CONFLICT)
 
-        # TODO: Remove the hardcoded 5 here to a general setting
         # Check if user can start any more tasks
         if len(flatten_query_set(user.livetask_set)) >= settings.MAX_ACTIVE_TASKS:
             return Response({'message': 'You cannot start any more tasks, finish or cancel tasks before proceeding'},
@@ -49,6 +48,7 @@ class TaskViewSet(viewsets.ModelViewSet):
 class LiveTaskReadOnlyViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = LiveTask.objects.all()
     serializer_class = LiveTaskSerializer
+    permission_classes = (permissions.IsAuthenticated,)
 
     @action(methods=['get'], detail=True)
     def complete_task(self, request, pk=None):
@@ -66,6 +66,7 @@ class LiveTaskReadOnlyViewSet(viewsets.ReadOnlyModelViewSet):
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+    permission_classes = (permissions.IsAuthenticated,)
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)

@@ -4,6 +4,7 @@ from rest_framework import routers
 from django.urls import include
 
 from rest_framework.schemas import get_schema_view
+from rest_framework.authtoken.views import obtain_auth_token
 
 router = routers.DefaultRouter()
 router.register(r'api/user', views.UserViewSet)
@@ -15,4 +16,5 @@ schema_view = get_schema_view(title='Pastebin API')
 urlpatterns = [
     url(r'^', include(router.urls)),
     url(r'^schema/$', schema_view),
+    url(r'^api/obtain-auth-token/$', obtain_auth_token),
 ]

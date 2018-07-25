@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'utask',
     'api',
     'rest_framework',
+    'rest_framework.authtoken',
     'frontend',
 ]
 
@@ -71,6 +72,13 @@ TEMPLATES = [
         },
     },
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication'
+    )
+}
 
 WSGI_APPLICATION = 'utask.wsgi.application'
 
