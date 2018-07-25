@@ -12,15 +12,15 @@ class Task(models.Model):
     created_time = models.DateTimeField(default=utils.timezone.now)
     end_time = models.DateTimeField()
     description = models.TextField(blank=True)
-    reward = models.FloatField(blank=True)
+    reward = models.FloatField()
     title = models.TextField()
     type = models.TextField()
-    total_cost = models.IntegerField()
+    total_cost = models.IntegerField(blank=True)
     amount = models.IntegerField()
     active = models.BooleanField(default=True)
 
-    user = models.ForeignKey(User, on_delete=models.DO_NOTHING)
-    completions = models.ManyToManyField(User, related_name='completions')
+    user = models.ForeignKey(User, on_delete=models.DO_NOTHING, blank=True)
+    completions = models.ManyToManyField(User, related_name='completions', blank=True)
 
 
 class LiveTask(models.Model):

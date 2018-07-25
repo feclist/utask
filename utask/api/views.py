@@ -19,6 +19,34 @@ class TaskViewSet(viewsets.ModelViewSet):
     serializer_class = TaskSerializer
     permission_classes = (permissions.IsAuthenticated,)
 
+    def create(self, request, *args, **kwargs):
+        request.data["user"] = request.user.pk
+        request.data["total_cost"] = int(request.data["amount"] * request.data["reward"])
+        request.data["completions"] = []
+
+        ostkit = OSTKit(api_url='https://sandboxapi.ost.com/v1.1',
+                        api_key=config('API_KEY'),
+                        api_secret=config('API_SECRET'))
+
+        response = ostkit.balances.retrieve(user_id=request.user.profile.ost_id)
+
+        if not response["success"]:
+            return Response({'message': 'Something went wrong with creating the task'}, status=status.HTTP_409_CONFLICT)
+
+        # Calculate how much a user can still spend on a task with all existing tasks that are active
+        effective_funds = float(response["data"]["balance"]["available_balance"]) - sum(
+            task.total_cost for task in request.user.task_set.all().filter(active=True))
+
+        # See if there's enough funds
+        if effective_funds >= request.data["total_cost"]:
+            serializer = self.get_serializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            self.perform_create(serializer)
+            headers = self.get_success_headers(serializer.data)
+            return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+        return Response({'message': 'Insufficient balance to fund this task'}, status=status.HTTP_409_CONFLICT)
+
     @action(methods=['get'], detail=True)
     def start_task(self, request, pk=None):
         task = self.get_object()
