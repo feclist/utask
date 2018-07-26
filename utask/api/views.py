@@ -114,3 +114,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+    @action(methods=['get'], detail=False)
+    def me(self, request, pk=None):
+        return Response(UserSerializer(request.user).data, status=status.HTTP_200_OK)
