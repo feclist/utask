@@ -110,17 +110,24 @@ class UserViewSet(viewsets.ModelViewSet):
 
 @api_view(['GET'])
 def wallet_detail(request):
-    """
-    Get wallet details
-    :param request:
-    :return:
-    """
     response = get_ost_kit().ledger.retrieve(user_id=request.user.profile.ost_id)
 
     if response["success"]:
         return Response(response['data'], status=status.HTTP_200_OK)
 
     return Response({"message": "Something went wrong when retrieving the wallet"}, status=status.HTTP_409_CONFLICT)
+
+
+# TODO: Implement actual token transfer
+@api_view(['POST'])
+def buy_tokens_from_company(request, amount):
+    return Response({"message": "You bought {} muT".format(amount)}, status=status.HTTP_200_OK)
+
+
+# TODO: Implement actual token transfer
+@api_view(['POST'])
+def sell_tokens_to_company(request, amount):
+    return Response({"message": "You sold {} muT".format(amount)}, status=status.HTTP_200_OK)
 
 
 @api_view(['GET'])
@@ -135,8 +142,8 @@ def list_transactions(request):
 
 
 @api_view(['GET'])
-def retrieve_transaction(request, pk):
-    response = get_ost_kit().transactions.retrieve(transaction_id=pk)
+def retrieve_transaction(request, transaction_id):
+    response = get_ost_kit().transactions.retrieve(transaction_id=transaction_id)
 
     if response["success"]:
         return Response(response['data'], status=status.HTTP_200_OK)

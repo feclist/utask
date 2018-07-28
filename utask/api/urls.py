@@ -17,7 +17,9 @@ urlpatterns = [
     url(r'^', include(router.urls)),
     url(r'^schema/$', schema_view),
     url(r'^api/obtain-auth-token/$', obtain_auth_token),
-    url(r'^api/user/me/wallet', views.wallet_detail),
+    url(r'^api/user/me/wallet/buy/(?P<amount>[0-9]+)$', views.buy_tokens_from_company),
+    url(r'^api/user/me/wallet/sell/(?P<amount>[0-9]+)$', views.sell_tokens_to_company),
     url(r'^api/user/me/wallet/transactions', views.list_transactions),
-    url(r'^api/user/me/wallet/transactions/(?P<pk>[0-9]+)$', views.retrieve_transaction),
+    url(r'^api/user/me/wallet/transactions/(?P<transaction_id>[0-9]+)$', views.retrieve_transaction),
+    url(r'^api/user/me/wallet', views.wallet_detail),
 ]
