@@ -1,17 +1,13 @@
 from api.models import Task, LiveTask
 from api.serializers import TaskSerializer, UserSerializer, LiveTaskSerializer
-from rest_framework import viewsets, status, permissions
+from rest_framework import viewsets, status, permissions, views
 from rest_framework.response import Response
-from rest_framework.decorators import action
+from rest_framework.decorators import action, api_view
 
 from django.contrib.auth.models import User
 from django.conf import settings
 
-from decouple import config
-
-from ost_kit_python import OSTKit
-
-from api.utils import flatten_query_set
+from api.utils import flatten_query_set, get_ost_kit
 
 
 class TaskViewSet(viewsets.ModelViewSet):
@@ -24,11 +20,7 @@ class TaskViewSet(viewsets.ModelViewSet):
         request.data["total_cost"] = int(request.data["amount"] * request.data["reward"])
         request.data["completions"] = []
 
-        ostkit = OSTKit(api_url='https://sandboxapi.ost.com/v1.1',
-                        api_key=config('API_KEY'),
-                        api_secret=config('API_SECRET'))
-
-        response = ostkit.balances.retrieve(user_id=request.user.profile.ost_id)
+        response = get_ost_kit().balances.retrieve(user_id=request.user.profile.ost_id)
 
         if not response["success"]:
             return Response({'message': 'Something went wrong with creating the task'}, status=status.HTTP_409_CONFLICT)
@@ -100,11 +92,7 @@ class UserViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        ostkit = OSTKit(api_url='https://sandboxapi.ost.com/v1.1',
-                        api_key=config('API_KEY'),
-                        api_secret=config('API_SECRET'))
-
-        response = ostkit.users.create(name=serializer.validated_data["username"])
+        response = get_ost_kit().users.create(name=serializer.validated_data["username"])
 
         if response["success"]:
             user = serializer.save()
@@ -118,3 +106,68 @@ class UserViewSet(viewsets.ModelViewSet):
     @action(methods=['get'], detail=False)
     def me(self, request, pk=None):
         return Response(UserSerializer(request.user).data, status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+def wallet_detail(request):
+    """
+    Get wallet details
+    :param request:
+    :return:
+    """
+    response = get_ost_kit().ledger.retrieve(user_id=request.user.profile.ost_id)
+
+    if response["success"]:
+        return Response(response['data'], status=status.HTTP_200_OK)
+
+    return Response({"message": "Something went wrong when retrieving the wallet"}, status=status.HTTP_409_CONFLICT)
+
+
+@api_view(['GET'])
+def list_transactions(request):
+    response = get_ost_kit().transactions.list(user_id=request.user.profile.ost_id)
+
+    if response["success"]:
+        return Response(response['data'], status=status.HTTP_200_OK)
+
+    return Response({"message": "Something went wrong when retrieving the transactions"},
+                    status=status.HTTP_409_CONFLICT)
+
+
+@api_view(['GET'])
+def retrieve_transaction(request, pk):
+    response = get_ost_kit().transactions.retrieve(transaction_id=pk)
+
+    if response["success"]:
+        return Response(response['data'], status=status.HTTP_200_OK)
+
+    return Response({"message": "Something went wrong when retrieving the transaction"},
+                    status=status.HTTP_409_CONFLICT)
+
+# class TransactionApiView(views.APIView):
+#
+#     def get(self, request):
+#         ostkit = OSTKit(api_url='https://sandboxapi.ost.com/v1.1',
+#                         api_key=config('API_KEY'),
+#                         api_secret=config('API_SECRET'))
+#
+#         response = ostkit.transactions.list(user_id=request.user.profile.ost_id)
+#
+#         if response["success"]:
+#             return Response(response['data'], status=status.HTTP_200_OK)
+#
+#         return Response({"message": "Something went wrong when retrieving the transactions"},
+#                         status=status.HTTP_409_CONFLICT)
+#
+#     def get(self, request, pk):
+#         ostkit = OSTKit(api_url='https://sandboxapi.ost.com/v1.1',
+#                         api_key=config('API_KEY'),
+#                         api_secret=config('API_SECRET'))
+#
+#         response = ostkit.transactions.retrieve(transaction_id=pk)
+#
+#         if response["success"]:
+#             return Response(response['data'], status=status.HTTP_200_OK)
+#
+#         return Response({"message": "Something went wrong when retrieving the transaction"},
+#                         status=status.HTTP_409_CONFLICT)
