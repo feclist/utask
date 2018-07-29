@@ -28,6 +28,13 @@ class LoginModal extends Component {
     name: '',
     password: ''
   }
+
+  handleChange = name => event => {
+    this.setState({
+      [name]: event.target.value
+    })
+  }
+
   render() {
     const { classes, ...other } = this.props
     return (
@@ -37,6 +44,7 @@ class LoginModal extends Component {
             id="name"
             className={classes.textField}
             value={this.state.name}
+            onChange={this.handleChange('name')}
             margin="normal"
             InputProps={{
               startAdornment: (
@@ -52,7 +60,8 @@ class LoginModal extends Component {
             type="password"
             autoComplete="current-password"
             margin="normal"
-            value={this.state.name}
+            value={this.state.password}
+            onChange={this.handleChange('password')}
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">

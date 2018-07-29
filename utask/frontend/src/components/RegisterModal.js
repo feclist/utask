@@ -35,6 +35,13 @@ class RegisterModal extends Component {
     password1: '',
     password2: ''
   }
+
+  handleChange = name => event => {
+    this.setState({
+      [name]: event.target.value
+    })
+  }
+
   render() {
     const { classes, ...other } = this.props
     return (
@@ -45,6 +52,7 @@ class RegisterModal extends Component {
               id="name"
               className={classes.nameTextField}
               value={this.state.firstName}
+              onChange={this.handleChange('firstName')}
               margin="normal"
               label="First name"
             />
@@ -52,6 +60,7 @@ class RegisterModal extends Component {
               id="name"
               className={classes.nameTextField}
               value={this.state.lastName}
+              onChange={this.handleChange('lastName')}
               margin="normal"
               label="Last name"
             />
@@ -60,6 +69,7 @@ class RegisterModal extends Component {
             id="name"
             className={classes.textField}
             value={this.state.username}
+            onChange={this.handleChange('username')}
             margin="normal"
             label="Username"
           />
@@ -70,6 +80,7 @@ class RegisterModal extends Component {
             margin="normal"
             label="Password"
             value={this.state.password1}
+            onChange={this.handleChange('password1')}
           />
           <TextField
             id="password-input"
@@ -78,6 +89,7 @@ class RegisterModal extends Component {
             margin="normal"
             label="Password (repeat)"
             value={this.state.password2}
+            onChange={this.handleChange('password2')}
           />
         </form>
         <Button variant="outlined" color="primary" className={classes.button}>
