@@ -5,6 +5,7 @@ import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
 import Button from '@material-ui/core/Button'
 import LoginModal from './components/LoginModal'
+import RegisterModal from './components/RegisterModal'
 
 const styles = theme => ({
   root: {
@@ -38,7 +39,8 @@ const styles = theme => ({
 
 class App extends Component {
   state = {
-    loginModalOpen: false
+    loginModalOpen: false,
+    registerModalOpen: false
   }
 
   handleLoginOpen = () => {
@@ -49,6 +51,14 @@ class App extends Component {
     this.setState({ loginModalOpen: false })
   }
 
+  handleRegisterOpen = () => {
+    this.setState({ registerModalOpen: true })
+  }
+
+  handleRegisterClose = () => {
+    this.setState({ registerModalOpen: false })
+  }
+
   render() {
     const { classes } = this.props
     return (
@@ -56,6 +66,10 @@ class App extends Component {
         <LoginModal
           open={this.state.loginModalOpen}
           handleClose={this.handleLoginClose}
+        />
+        <RegisterModal
+          open={this.state.registerModalOpen}
+          handleClose={this.handleRegisterClose}
         />
         <AppBar position="static" color="default" className={classes.appBar}>
           <Toolbar className={classes.toolBar}>
@@ -84,6 +98,7 @@ class App extends Component {
                 variant="outlined"
                 color="primary"
                 className={classes.button}
+                onClick={this.handleRegisterOpen}
               >
                 Get started
               </Button>
