@@ -64,6 +64,30 @@
     }
   },
   {
+    "model": "contenttypes.contenttype",
+    "pk": 9,
+    "fields": {
+      "app_label": "api",
+      "model": "livetask"
+    }
+  },
+  {
+    "model": "contenttypes.contenttype",
+    "pk": 10,
+    "fields": {
+      "app_label": "authtoken",
+      "model": "token"
+    }
+  },
+  {
+    "model": "contenttypes.contenttype",
+    "pk": 11,
+    "fields": {
+      "app_label": "api",
+      "model": "taskreward"
+    }
+  },
+  {
     "model": "auth.permission",
     "pk": 1,
     "fields": {
@@ -280,6 +304,87 @@
     }
   },
   {
+    "model": "auth.permission",
+    "pk": 25,
+    "fields": {
+      "name": "Can add live task",
+      "content_type": 9,
+      "codename": "add_livetask"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 26,
+    "fields": {
+      "name": "Can change live task",
+      "content_type": 9,
+      "codename": "change_livetask"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 27,
+    "fields": {
+      "name": "Can delete live task",
+      "content_type": 9,
+      "codename": "delete_livetask"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 28,
+    "fields": {
+      "name": "Can add Token",
+      "content_type": 10,
+      "codename": "add_token"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 29,
+    "fields": {
+      "name": "Can change Token",
+      "content_type": 10,
+      "codename": "change_token"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 30,
+    "fields": {
+      "name": "Can delete Token",
+      "content_type": 10,
+      "codename": "delete_token"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 31,
+    "fields": {
+      "name": "Can add task reward",
+      "content_type": 11,
+      "codename": "add_taskreward"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 32,
+    "fields": {
+      "name": "Can change task reward",
+      "content_type": 11,
+      "codename": "change_taskreward"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 33,
+    "fields": {
+      "name": "Can delete task reward",
+      "content_type": 11,
+      "codename": "delete_taskreward"
+    }
+  },
+  {
     "model": "auth.user",
     "pk": 1,
     "fields": {
@@ -298,10 +403,166 @@
     }
   },
   {
+    "model": "auth.user",
+    "pk": 2,
+    "fields": {
+      "password": "pbkdf2_sha256$100000$xpaMx7OaIk85$elmpRfoHvjEJFEJm5lbE3DmZfE2K6VUeQLwny/iMNcs=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "john2",
+      "first_name": "",
+      "last_name": "",
+      "email": "john@doe.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2018-07-22T22:02:19.108Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 3,
+    "fields": {
+      "password": "pbkdf2_sha256$100000$xpaMx7OaIk85$elmpRfoHvjEJFEJm5lbE3DmZfE2K6VUeQLwny/iMNcs=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "john3",
+      "first_name": "",
+      "last_name": "",
+      "email": "john@doe.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2018-07-22T22:02:19.108Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 4,
+    "fields": {
+      "password": "pbkdf2_sha256$100000$xpaMx7OaIk85$elmpRfoHvjEJFEJm5lbE3DmZfE2K6VUeQLwny/iMNcs=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "john4",
+      "first_name": "",
+      "last_name": "",
+      "email": "john@doe.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2018-07-22T22:02:19.108Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 5,
+    "fields": {
+      "password": "pbkdf2_sha256$100000$xpaMx7OaIk85$elmpRfoHvjEJFEJm5lbE3DmZfE2K6VUeQLwny/iMNcs=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "john5",
+      "first_name": "",
+      "last_name": "",
+      "email": "john@doe.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2018-07-22T22:02:19.108Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 6,
+    "fields": {
+      "password": "pbkdf2_sha256$100000$xpaMx7OaIk85$elmpRfoHvjEJFEJm5lbE3DmZfE2K6VUeQLwny/iMNcs=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "florislist",
+      "first_name": "",
+      "last_name": "",
+      "email": "john@doe.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2018-07-22T22:02:19.108Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 7,
+    "fields": {
+      "password": "pbkdf2_sha256$100000$I8HyJyCZQaLt$v6qKbxDAHWsC688E04vdR5nkM7koUkcznjPT9q0Noxs=",
+      "last_login": null,
+      "is_superuser": true,
+      "username": "root",
+      "first_name": "",
+      "last_name": "",
+      "email": "root@root.com",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2018-07-25T00:19:51.459Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
     "model": "api.profile",
     "pk": 1,
     "fields": {
       "user": 1,
+      "ost_id": "8a1e1800-76d4-45dc-91fb-dd99f724bca3"
+    }
+  },
+  {
+    "model": "api.profile",
+    "pk": 2,
+    "fields": {
+      "user": 2,
+      "ost_id": "f49bbdb0-1915-4467-b1c2-01cbd13247cd"
+    }
+  },
+  {
+    "model": "api.profile",
+    "pk": 3,
+    "fields": {
+      "user": 3,
+      "ost_id": "687bf180-b168-4af0-8008-5a4329a57d77"
+    }
+  },
+  {
+    "model": "api.profile",
+    "pk": 4,
+    "fields": {
+      "user": 4,
+      "ost_id": "ff334775-ebea-409a-a028-39179190df9b"
+    }
+  },
+  {
+    "model": "api.profile",
+    "pk": 5,
+    "fields": {
+      "user": 5,
+      "ost_id": "7a2c2c07-f0b8-4901-a436-19c4cbc9b02e"
+    }
+  },
+  {
+    "model": "api.profile",
+    "pk": 6,
+    "fields": {
+      "user": 6,
+      "ost_id": "341ec24d-2e36-420a-bdc5-cb4c85f29449"
+    }
+  },
+  {
+    "model": "api.profile",
+    "pk": 7,
+    "fields": {
+      "user": 7,
       "ost_id": "2331b41e-7f19-407f-92b2-d0f461562bb1"
     }
   },
@@ -315,12 +576,42 @@
       "reward": 5.0,
       "title": "Test task",
       "type": "Anon",
-      "total_cost": 500,
-      "amount": 100,
-      "user": 1,
-      "completions": [
-        1
-      ]
+      "total_cost": 25,
+      "amount": 5,
+      "active": true,
+      "user": 1
+    }
+  },
+  {
+    "model": "api.task",
+    "pk": 2,
+    "fields": {
+      "created_time": "2018-07-25T01:51:24.440Z",
+      "end_time": "2018-07-22T22:04:59.413Z",
+      "description": "",
+      "reward": 5.0,
+      "title": "Second task",
+      "type": "Arbitrary",
+      "total_cost": 50,
+      "amount": 10,
+      "active": true,
+      "user": 1
+    }
+  },
+  {
+    "model": "api.task",
+    "pk": 3,
+    "fields": {
+      "created_time": "2018-07-25T02:38:07.931Z",
+      "end_time": "2018-07-22T22:04:59.413Z",
+      "description": "",
+      "reward": 5.0,
+      "title": "Second task",
+      "type": "Arbitrary",
+      "total_cost": 10,
+      "amount": 2,
+      "active": true,
+      "user": 2
     }
   }
 ]
