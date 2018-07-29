@@ -20,10 +20,16 @@ class Task(models.Model):
     active = models.BooleanField(default=True)
 
     user = models.ForeignKey(User, on_delete=models.DO_NOTHING, blank=True)
-    completions = models.ManyToManyField(User, related_name='completions', blank=True)
 
 
 class LiveTask(models.Model):
     task = models.ForeignKey(Task, on_delete=models.DO_NOTHING)
     user = models.ForeignKey(User, on_delete=models.DO_NOTHING)
     timestamp = models.DateTimeField(default=utils.timezone.now)
+
+
+class TaskReward(models.Model):
+    transaction_id = models.TextField()
+
+    user = models.ForeignKey(User, on_delete=models.DO_NOTHING)
+    task = models.ForeignKey(Task, related_name="completions", on_delete=models.DO_NOTHING)

@@ -1,9 +1,17 @@
 from rest_framework import serializers
-from api.models import Task, LiveTask, Profile
+from api.models import Task, LiveTask, Profile, TaskReward
 from django.contrib.auth.models import User
 
 
+class TaskRewardSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TaskReward
+        fields = '__all__'
+
+
 class TaskSerializer(serializers.ModelSerializer):
+    completions = TaskRewardSerializer(many=True, read_only=True)
+
     class Meta:
         model = Task
         fields = '__all__'

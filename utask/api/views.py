@@ -1,4 +1,4 @@
-from api.models import Task, LiveTask
+from api.models import Task, LiveTask, TaskReward
 from api.serializers import TaskSerializer, UserSerializer, LiveTaskSerializer
 from rest_framework import viewsets, status, permissions, views
 from rest_framework.response import Response
@@ -19,7 +19,6 @@ class TaskViewSet(viewsets.ModelViewSet):
     def create(self, request, *args, **kwargs):
         request.data["user"] = request.user.pk
         request.data["total_cost"] = int(request.data["amount"] * request.data["reward"])
-        request.data["completions"] = []
 
         response = get_ost_kit().balances.retrieve(user_id=request.user.profile.ost_id)
 
@@ -49,7 +48,7 @@ class TaskViewSet(viewsets.ModelViewSet):
                             status=status.HTTP_409_CONFLICT)
 
         # Check if the user didn't already finish this task
-        if task.completions.filter(pk=user.pk).exists():
+        if task.completions.filter(user__pk=user.pk).exists():
             return Response({'message': 'You already finished this task, you cannot do it again'},
                             status=status.HTTP_409_CONFLICT)
 
@@ -85,9 +84,10 @@ class LiveTaskReadOnlyViewSet(viewsets.ReadOnlyModelViewSet):
                                                       amount=task.reward)
         print(response)
         if response["success"]:
-            task.completions.add(live_task.user)
-            task.save()
-
+            task_reward = TaskReward(transaction_id=response["data"]["transaction"]["id"],
+                                     user=live_task.user,
+                                     task=task)
+            task_reward.save()
             live_task.delete()
 
             return Response(TaskSerializer(task).data, status=status.HTTP_200_OK)
