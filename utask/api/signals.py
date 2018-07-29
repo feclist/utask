@@ -9,18 +9,27 @@ from api.utils import flatten_query_set
 
 @receiver(post_save, sender=User)
 def init_new_user(sender, instance, signal, created, **kwargs):
+    if kwargs['raw']:
+        print("Skipping signal for {}".format(kwargs))
+        return
     if created:
         Token.objects.create(user=instance)
 
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
+    if kwargs['raw']:
+        print("Skipping signal for {}".format(kwargs))
+        return
     if created:
         Profile.objects.create(user=instance)
 
 
 @receiver(post_save, sender=User)
 def save_user_profile(sender, instance, **kwargs):
+    if kwargs['raw']:
+        print("Skipping signal for {}".format(kwargs))
+        return
     instance.profile.save()
 
 

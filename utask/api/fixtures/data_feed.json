@@ -12,7 +12,7 @@
     "pk": 2,
     "fields": {
       "app_label": "auth",
-      "model": "user"
+      "model": "permission"
     }
   },
   {
@@ -20,7 +20,7 @@
     "pk": 3,
     "fields": {
       "app_label": "auth",
-      "model": "permission"
+      "model": "group"
     }
   },
   {
@@ -28,7 +28,7 @@
     "pk": 4,
     "fields": {
       "app_label": "auth",
-      "model": "group"
+      "model": "user"
     }
   },
   {
@@ -75,16 +75,16 @@
     "model": "contenttypes.contenttype",
     "pk": 10,
     "fields": {
-      "app_label": "authtoken",
-      "model": "token"
+      "app_label": "api",
+      "model": "taskreward"
     }
   },
   {
     "model": "contenttypes.contenttype",
     "pk": 11,
     "fields": {
-      "app_label": "api",
-      "model": "taskreward"
+      "app_label": "authtoken",
+      "model": "token"
     }
   },
   {
@@ -118,81 +118,81 @@
     "model": "auth.permission",
     "pk": 4,
     "fields": {
-      "name": "Can add user",
+      "name": "Can add permission",
       "content_type": 2,
-      "codename": "add_user"
+      "codename": "add_permission"
     }
   },
   {
     "model": "auth.permission",
     "pk": 5,
     "fields": {
-      "name": "Can change user",
+      "name": "Can change permission",
       "content_type": 2,
-      "codename": "change_user"
+      "codename": "change_permission"
     }
   },
   {
     "model": "auth.permission",
     "pk": 6,
     "fields": {
-      "name": "Can delete user",
+      "name": "Can delete permission",
       "content_type": 2,
-      "codename": "delete_user"
+      "codename": "delete_permission"
     }
   },
   {
     "model": "auth.permission",
     "pk": 7,
     "fields": {
-      "name": "Can add permission",
+      "name": "Can add group",
       "content_type": 3,
-      "codename": "add_permission"
+      "codename": "add_group"
     }
   },
   {
     "model": "auth.permission",
     "pk": 8,
     "fields": {
-      "name": "Can change permission",
+      "name": "Can change group",
       "content_type": 3,
-      "codename": "change_permission"
+      "codename": "change_group"
     }
   },
   {
     "model": "auth.permission",
     "pk": 9,
     "fields": {
-      "name": "Can delete permission",
+      "name": "Can delete group",
       "content_type": 3,
-      "codename": "delete_permission"
+      "codename": "delete_group"
     }
   },
   {
     "model": "auth.permission",
     "pk": 10,
     "fields": {
-      "name": "Can add group",
+      "name": "Can add user",
       "content_type": 4,
-      "codename": "add_group"
+      "codename": "add_user"
     }
   },
   {
     "model": "auth.permission",
     "pk": 11,
     "fields": {
-      "name": "Can change group",
+      "name": "Can change user",
       "content_type": 4,
-      "codename": "change_group"
+      "codename": "change_user"
     }
   },
   {
     "model": "auth.permission",
     "pk": 12,
     "fields": {
-      "name": "Can delete group",
+      "name": "Can delete user",
       "content_type": 4,
-      "codename": "delete_group"
+      "codename": "delete_user"
     }
   },
   {
@@ -334,54 +334,54 @@
     "model": "auth.permission",
     "pk": 28,
     "fields": {
-      "name": "Can add Token",
+      "name": "Can add task reward",
       "content_type": 10,
-      "codename": "add_token"
+      "codename": "add_taskreward"
     }
   },
   {
     "model": "auth.permission",
     "pk": 29,
     "fields": {
-      "name": "Can change Token",
+      "name": "Can change task reward",
       "content_type": 10,
-      "codename": "change_token"
+      "codename": "change_taskreward"
     }
   },
   {
     "model": "auth.permission",
     "pk": 30,
     "fields": {
-      "name": "Can delete Token",
+      "name": "Can delete task reward",
       "content_type": 10,
-      "codename": "delete_token"
+      "codename": "delete_taskreward"
     }
   },
   {
     "model": "auth.permission",
     "pk": 31,
     "fields": {
-      "name": "Can add task reward",
+      "name": "Can add Token",
       "content_type": 11,
-      "codename": "add_taskreward"
+      "codename": "add_token"
     }
   },
   {
     "model": "auth.permission",
     "pk": 32,
     "fields": {
-      "name": "Can change task reward",
+      "name": "Can change Token",
       "content_type": 11,
-      "codename": "change_taskreward"
+      "codename": "change_token"
     }
   },
   {
     "model": "auth.permission",
     "pk": 33,
     "fields": {
-      "name": "Can delete task reward",
+      "name": "Can delete Token",
       "content_type": 11,
-      "codename": "delete_taskreward"
+      "codename": "delete_token"
     }
   },
   {
@@ -612,6 +612,62 @@
       "amount": 2,
       "active": true,
       "user": 2
+    }
+  },
+  {
+    "model": "authtoken.token",
+    "pk": "09b602dba1267517d7cf47f89f2c9502d7d5b2a1",
+    "fields": {
+      "user": 1,
+      "created": "2018-07-29T05:10:33.354Z"
+    }
+  },
+  {
+    "model": "authtoken.token",
+    "pk": "17638ea1897855c9250f8207c118019c989dcafc",
+    "fields": {
+      "user": 3,
+      "created": "2018-07-29T05:10:33.367Z"
+    }
+  },
+  {
+    "model": "authtoken.token",
+    "pk": "3b544015739d7f636be7b640cb2c713a064ca278",
+    "fields": {
+      "user": 6,
+      "created": "2018-07-29T05:10:33.385Z"
+    }
+  },
+  {
+    "model": "authtoken.token",
+    "pk": "4db080e033c3b52b55afdfb75c7fd9c7f46a65c4",
+    "fields": {
+      "user": 5,
+      "created": "2018-07-29T05:10:33.380Z"
+    }
+  },
+  {
+    "model": "authtoken.token",
+    "pk": "528cabda367f7293e18335850cbab150198d4d5d",
+    "fields": {
+      "user": 7,
+      "created": "2018-07-29T05:10:33.394Z"
+    }
+  },
+  {
+    "model": "authtoken.token",
+    "pk": "8d882bc940ef206e0f3d0c0dada73db2308a34a5",
+    "fields": {
+      "user": 2,
+      "created": "2018-07-29T05:10:33.362Z"
+    }
+  },
+  {
+    "model": "authtoken.token",
+    "pk": "c825f71d7f8ebc7871cc14afbda6e16836503a75",
+    "fields": {
+      "user": 4,
+      "created": "2018-07-29T05:10:33.373Z"
     }
   }
 ]
