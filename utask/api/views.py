@@ -3,6 +3,7 @@ from api.serializers import TaskSerializer, UserSerializer, LiveTaskSerializer
 from rest_framework import viewsets, status, permissions, views
 from rest_framework.response import Response
 from rest_framework.decorators import action, api_view
+from decouple import config
 
 from django.contrib.auth.models import User
 from django.conf import settings
@@ -23,7 +24,8 @@ class TaskViewSet(viewsets.ModelViewSet):
         response = get_ost_kit().balances.retrieve(user_id=request.user.profile.ost_id)
 
         if not response["success"]:
-            return Response({'message': 'Something went wrong with creating the task'}, status=status.HTTP_409_CONFLICT)
+            return Response({'message': 'Something went wrong with creating the task', 'err': response["err"]},
+                            status=status.HTTP_409_CONFLICT)
 
         # See if there's enough funds
         if calc_effective_funds(response["data"]["balance"]["available_balance"], request.user) >= request.data[
@@ -41,6 +43,11 @@ class TaskViewSet(viewsets.ModelViewSet):
         task = self.get_object()
         user = request.user
 
+        # Check if the user is not trying to do own task
+        if task.user.pk == user.pk:
+            return Response({'message': 'You cannot do your own task, silly.'},
+                            status=status.HTTP_409_CONFLICT)
+
         # Check if the user didn't already finish this task
         if task.completions.filter(pk=user.pk).exists():
             return Response({'message': 'You already finished this task, you cannot do it again'},
@@ -52,7 +59,7 @@ class TaskViewSet(viewsets.ModelViewSet):
                             status=status.HTTP_409_CONFLICT)
 
         # Check if a new user can start the task
-        if task.amount >= len(flatten_query_set(task.completions)) or not task.active:
+        if len(flatten_query_set(task.completions)) >= task.amount or not task.active:
             return Response({'message': 'This task cannot be started'}, status=status.HTTP_409_CONFLICT)
 
         live_task = LiveTask(task=task, user=user)
@@ -72,12 +79,20 @@ class LiveTaskReadOnlyViewSet(viewsets.ReadOnlyModelViewSet):
         live_task = self.get_object()
 
         task = live_task.task
-        task.completions.add(live_task.user)
-        task.save()
+        response = get_ost_kit().transactions.execute(from_user_id=task.user.profile.ost_id,
+                                                      to_user_id=live_task.user.profile.ost_id,
+                                                      action_id=39046,
+                                                      amount=task.reward)
+        print(response)
+        if response["success"]:
+            task.completions.add(live_task.user)
+            task.save()
 
-        live_task.delete()
+            live_task.delete()
 
-        return Response(TaskSerializer(task).data, status=status.HTTP_200_OK)
+            return Response(TaskSerializer(task).data, status=status.HTTP_200_OK)
+        return Response({"message": "Something went wrong when completing the task", 'err': response["err"]},
+                        status=status.HTTP_409_CONFLICT)
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -105,51 +120,62 @@ class UserViewSet(viewsets.ModelViewSet):
         return Response(UserSerializer(request.user).data, status=status.HTTP_200_OK)
 
 
-# TODO: TEST THIS
 @api_view(['GET'])
 def wallet_detail(request):
-    response = get_ost_kit().ledger.retrieve(user_id=request.user.profile.ost_id)
+    response = get_ost_kit().balances.retrieve(user_id=request.user.profile.ost_id)
 
     if response["success"]:
         return Response(response['data'], status=status.HTTP_200_OK)
 
-    return Response({"message": "Something went wrong when retrieving the wallet"}, status=status.HTTP_409_CONFLICT)
+    return Response({"message": "Something went wrong when retrieving the wallet", 'err': response["err"]},
+                    status=status.HTTP_409_CONFLICT)
 
 
-# TODO: TEST THIS
-# TODO: Implement actual token transfer
 @api_view(['POST'])
 def buy_tokens_from_company(request, amount):
     response = get_ost_kit().balances.retrieve(user_id=request.user.profile.ost_id)
     # This hardcoded check makes sure users won't be able to spam crazy amounts
     # to be added to their wallet, making us go bankrupt :). This will be deleted
     # if we'll actually implement a proper buy-in system.
-    if calc_effective_funds(response["data"]["balance"]["available_balance"], request.user) >= 30 and amount <= 50:
-        return Response({"message": "You boughnt {} muT".format(amount)}, status=status.HTTP_200_OK)
+    if calc_effective_funds(response["data"]["balance"]["available_balance"], request.user) <= 30 and float(
+            amount) <= 50:
+        response = get_ost_kit().transactions.execute(from_user_id=config('COMPANY_UUID'),
+                                                      to_user_id=request.user.profile.ost_id,
+                                                      action_id=39580,
+                                                      amount=amount)
+        if response["success"]:
+            print(response["data"])
+            return Response({"message": "You boughnt {} muT".format(amount)}, status=status.HTTP_200_OK)
+        return Response({"message": "Something went wrong when buying", 'err': response["err"]},
+                        status=status.HTTP_409_CONFLICT)
 
     return Response({"message": "You cannot buy that many tokens"}, status=status.HTTP_409_CONFLICT)
 
 
-# TODO: TEST THIS
-# TODO: Implement actual token transfer
 @api_view(['POST'])
 def sell_tokens_to_company(request, amount):
     response = get_ost_kit().balances.retrieve(user_id=request.user.profile.ost_id)
-    if calc_effective_funds(response["data"]["balance"]["available_balance"], request.user) >= amount:
-        return Response({"message": "You sold {} muT".format(amount)}, status=status.HTTP_200_OK)
+    if calc_effective_funds(response["data"]["balance"]["available_balance"], request.user) >= float(amount):
+        response = get_ost_kit().transactions.execute(from_user_id=request.user.profile.ost_id,
+                                                      to_user_id=config('COMPANY_UUID'),
+                                                      action_id=39581,
+                                                      amount=amount)
+        if response["success"]:
+            print(response["data"])
+            return Response({"message": "You sold {} muT".format(amount)}, status=status.HTTP_200_OK)
 
-    return Response({"message": "You cannot sell more tokens than you have"}, status=status.HTTP_409_CONFLICT)
+    return Response({"message": "You cannot sell more tokens than you have", 'err': response["err"]},
+                    status=status.HTTP_409_CONFLICT)
 
 
-# TODO: TEST THIS
 @api_view(['GET'])
 def list_transactions(request):
-    response = get_ost_kit().transactions.list(user_id=request.user.profile.ost_id)
+    response = get_ost_kit().ledger.retrieve(user_id=request.user.profile.ost_id)
 
     if response["success"]:
         return Response(response['data'], status=status.HTTP_200_OK)
 
-    return Response({"message": "Something went wrong when retrieving the transactions"},
+    return Response({"message": "Something went wrong when retrieving the transactions", 'err': response["err"]},
                     status=status.HTTP_409_CONFLICT)
 
 
@@ -161,33 +187,5 @@ def retrieve_transaction(request, transaction_id):
     if response["success"]:
         return Response(response['data'], status=status.HTTP_200_OK)
 
-    return Response({"message": "Something went wrong when retrieving the transaction"},
+    return Response({"message": "Something went wrong when retrieving the transaction", 'err': response["err"]},
                     status=status.HTTP_409_CONFLICT)
-
-# class TransactionApiView(views.APIView):
-#
-#     def get(self, request):
-#         ostkit = OSTKit(api_url='https://sandboxapi.ost.com/v1.1',
-#                         api_key=config('API_KEY'),
-#                         api_secret=config('API_SECRET'))
-#
-#         response = ostkit.transactions.list(user_id=request.user.profile.ost_id)
-#
-#         if response["success"]:
-#             return Response(response['data'], status=status.HTTP_200_OK)
-#
-#         return Response({"message": "Something went wrong when retrieving the transactions"},
-#                         status=status.HTTP_409_CONFLICT)
-#
-#     def get(self, request, pk):
-#         ostkit = OSTKit(api_url='https://sandboxapi.ost.com/v1.1',
-#                         api_key=config('API_KEY'),
-#                         api_secret=config('API_SECRET'))
-#
-#         response = ostkit.transactions.retrieve(transaction_id=pk)
-#
-#         if response["success"]:
-#             return Response(response['data'], status=status.HTTP_200_OK)
-#
-#         return Response({"message": "Something went wrong when retrieving the transaction"},
-#                         status=status.HTTP_409_CONFLICT)
