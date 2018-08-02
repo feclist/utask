@@ -6,6 +6,7 @@ import Toolbar from '@material-ui/core/Toolbar'
 import Button from '@material-ui/core/Button'
 import LoginModal from './components/LoginModal'
 import RegisterModal from './components/RegisterModal'
+import ApiClient from './utils/ApiClient';
 
 const styles = theme => ({
   root: {
@@ -57,6 +58,10 @@ class App extends Component {
 
   handleRegisterClose = () => {
     this.setState({ registerModalOpen: false })
+  }
+
+  componentWillMount = () => {
+    window.apiClient = new ApiClient('/api')
   }
 
   render() {
