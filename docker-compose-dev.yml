@@ -8,7 +8,6 @@ services:
 
   node:
     build: ./utask/frontend
-    command: ["npm", "start"]
     volumes:
       - ./utask/frontend:/app/frontend
       - ./utask/frontend/node_modules:/app/frontend/node_modules

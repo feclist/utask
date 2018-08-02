@@ -7,6 +7,7 @@ import InputAdornment from '@material-ui/core/InputAdornment'
 import AccountCircle from '@material-ui/icons/AccountCircle'
 import Lock from '@material-ui/icons/Lock'
 import StyledModal from './StyledModal'
+import ApiClient from '../utils/ApiClient';
 
 const styles = theme => ({
   button: {
@@ -71,7 +72,10 @@ class LoginModal extends Component {
             }}
           />
         </form>
-        <Button variant="outlined" color="primary" className={classes.button}>
+        <Button variant="outlined" color="primary" className={classes.button} onClick={() => {
+          window.apiClient.users.login('root', 'rootadmin')
+          window.apiClient.users.list()
+        }}>
           SIGN IN
         </Button>
       </StyledModal>
