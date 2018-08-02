@@ -2,5 +2,5 @@ venv
 node_modules
 .idea
 .env
-src
+/src
 __pycache__

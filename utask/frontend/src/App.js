@@ -6,10 +6,16 @@ import Toolbar from '@material-ui/core/Toolbar'
 import Button from '@material-ui/core/Button'
 import LoginModal from './components/LoginModal'
 import RegisterModal from './components/RegisterModal'
+import MarketPlace from './MarketPlace'
 
 const styles = theme => ({
   root: {
     flexGrow: 1
+  },
+  pageContainer: {
+    display: 'block',
+    margin: 'auto',
+    width: 1000
   },
   appBar: {
     backgroundColor: '#fff',
@@ -105,6 +111,9 @@ class App extends Component {
             </div>
           </Toolbar>
         </AppBar>
+        <div className={classes.pageContainer}>
+          <MarketPlace />
+        </div>
       </div>
     )
   }
