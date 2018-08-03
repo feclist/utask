@@ -2,7 +2,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { withStyles } from '@material-ui/core/styles'
 import Typography from '@material-ui/core/Typography'
-import Paper from '@material-ui/core/Paper'
 import Button from '@material-ui/core/Button'
 import LinearProgress from '@material-ui/core/LinearProgress'
 import MutBalance from './MutBalance'
@@ -39,36 +38,28 @@ const getLinearProgressValues = task => {
   return { value, valueBuffer }
 }
 
-const TaskCard = ({ task, classes }) => {
+const CompletedTask = ({ task, transaction, classes }) => {
   const linProValues = getLinearProgressValues(task)
   return (
-    <Paper className={classes.root} elevation={4}>
+    <div className={classes.root}>
       <div className={classes.titleLine}>
         <Typography variant="title">{task.title}</Typography>
         <MutBalance amount={task.reward} />
       </div>
       <Typography variant="subheading" gutterBottom>
-        Finish by{' '}
+        You completed this task on{' '}
         {moment
-          .utc(task.end_time)
+          .utc(transaction.timestamp)
           .local()
-          .format('HH:mm MMMM Do')}
+          .format('DD/MM/YYYY')}
       </Typography>
       <Typography variant="body1" gutterBottom>
         {task.description}
       </Typography>
-      <LinearProgress
-        {...linProValues}
-        variant="buffer"
-        className={classes.progress}
-      />
-      <Button variant="outlined" color="primary" className={classes.button}>
-        Do task
-      </Button>
-    </Paper>
+    </div>
   )
 }
 
-TaskCard.propTypes = {}
+CompletedTask.propTypes = {}
 
-export default withStyles(styles)(TaskCard)
+export default withStyles(styles)(CompletedTask)

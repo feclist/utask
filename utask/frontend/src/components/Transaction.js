@@ -65,7 +65,7 @@ class Transaction extends React.Component {
                         }
                     </Typography>
                     <Typography variant="body1" gutterBottom>
-                        {this.props.transaction.task_id && <p>Belongs to <u>this task</u></p>}
+                        {this.props.transaction.task_id && <p>Belongs to <u onClick={this.props.triggerTaskDrawer}>this task</u></p>}
                     </Typography>
                 </div>
             </ListItem>

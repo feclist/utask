@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import Transaction from './Transaction'
+import TaskDrawer from './TaskDrawer'
 import { withStyles, Divider } from '../../node_modules/@material-ui/core';
 import List from '@material-ui/core/List';
 
@@ -18,7 +19,12 @@ class TransactionList extends React.Component {
         this.state = {
             transactions: [],
             me: undefined,
+            drawerOpen: false,
+            drawerTask: undefined,
+            drawerTransaction: undefined,
         }
+
+        this.closeTaskDrawer = this.closeTaskDrawer.bind(this)
     }
 
     async componentDidMount() {
@@ -32,6 +38,21 @@ class TransactionList extends React.Component {
         })
     }
 
+    triggerTaskDrawer(transaction) {
+        const taskResponse = window.apiClient.tasks.retrieve(transaction.task_id).then((task) => {
+            console.log(task)
+            this.setState({ 
+                drawerTask: task,
+                drawerTransaction: transaction
+            })
+        })
+        this.setState({ drawerOpen: true })
+    }
+
+    closeTaskDrawer() {
+        this.setState({ drawerOpen: false })
+    }
+
     render() {
         const { classes, ...other } = this.props
         return (
@@ -40,11 +61,12 @@ class TransactionList extends React.Component {
                     {this.state.transactions.map((transaction) =>
                         transaction !== undefined && 
                             <div>
-                                <Transaction key={transaction.id} transaction={transaction} ostId={this.state.me.profile.ost_id} />
+                                <Transaction key={transaction.id} transaction={transaction} ostId={this.state.me.profile.ost_id} triggerTaskDrawer={() => this.triggerTaskDrawer(transaction)} />
                                 <Divider />
                             </div>
                     )}
                 </List>
+                <TaskDrawer open={this.state.drawerOpen} onClose={this.closeTaskDrawer} task={this.state.drawerTask} transaction={this.state.drawerTransaction} />
             </div>
         )
     }

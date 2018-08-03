@@ -18,7 +18,7 @@ export default class MarketPlace extends Component {
         active: false,
         user: 1,
         completions: [1, 2, 3],
-        live_task: [123]
+        live_tasks: [123]
       },
       {
         id: 2,
@@ -34,7 +34,7 @@ export default class MarketPlace extends Component {
         active: false,
         user: 2,
         completions: [1, 2, 3, 4, 5, 6, 7, 8, 9],
-        live_task: [123, 243]
+        live_tasks: [123, 243]
       }
     ]
   }

@@ -23,7 +23,7 @@ class Task(models.Model):
 
 
 class LiveTask(models.Model):
-    task = models.ForeignKey(Task, on_delete=models.DO_NOTHING)
+    task = models.ForeignKey(Task, on_delete=models.DO_NOTHING, related_name="live_tasks")
     user = models.ForeignKey(User, on_delete=models.DO_NOTHING)
     timestamp = models.DateTimeField(default=utils.timezone.now)
 

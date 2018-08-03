@@ -9,8 +9,15 @@ class TaskRewardSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class LiveTaskSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = LiveTask
+        fields = '__all__'
+
+
 class TaskSerializer(serializers.ModelSerializer):
     completions = TaskRewardSerializer(many=True, read_only=True)
+    live_tasks = LiveTaskSerializer(many=True, read_only=True)
 
     class Meta:
         model = Task
@@ -28,10 +35,4 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = '__all__'
-
-
-class LiveTaskSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = LiveTask
         fields = '__all__'

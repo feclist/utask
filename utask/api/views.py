@@ -179,7 +179,7 @@ def list_transactions(request):
         for transaction in data:
             reward = TaskReward.objects.filter(transaction_id=transaction["id"]).first()
             if reward:
-                transaction["task_id"] = reward.id
+                transaction["task_id"] = reward.task.id
             transaction["action"] = action_list[int(transaction["action_id"])]
         return Response(response['data'], status=status.HTTP_200_OK)
 

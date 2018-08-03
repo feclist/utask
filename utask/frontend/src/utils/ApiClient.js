@@ -16,10 +16,10 @@ export default class ApiClient extends RestClient {
         console.log(response)
       })
     },
-    retrieve: (id) => {
-      this.GET('/task/' + id).then((response) => {
-        console.log(response)
-      })
+    retrieve: async (id) => {
+      const body = await this.GET('/task/' + id)
+      console.log(body)
+      return body
     }
   }
 
@@ -46,7 +46,6 @@ export default class ApiClient extends RestClient {
       })
     }
   }
-TableBody
   me = {
     retrieve: async () => {
       const body = await this.GET('/user/me/')
