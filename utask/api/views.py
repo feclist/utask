@@ -1,5 +1,5 @@
 from api.models import Task, LiveTask, TaskReward
-from api.serializers import TaskSerializer, UserSerializer, LiveTaskSerializer
+from api.serializers import TaskSerializer, UserSerializer, LiveTaskSerializer, TaskRewardSerializer
 from rest_framework import viewsets, status, permissions, views
 from rest_framework.response import Response
 from rest_framework.decorators import action, api_view
@@ -173,19 +173,26 @@ def list_transactions(request):
     response = get_ost_kit().ledger.retrieve(user_id=request.user.profile.ost_id)
 
     if response["success"]:
+        actions = get_ost_kit().actions.list()
+        action_list = {int(action["id"]): action for action in actions["data"]["actions"]}
+        data = response["data"]["transactions"]
+        for transaction in data:
+            reward = TaskReward.objects.filter(transaction_id=transaction["id"]).first()
+            if reward:
+                transaction["task_id"] = reward.id
+            transaction["action"] = action_list[int(transaction["action_id"])]
         return Response(response['data'], status=status.HTTP_200_OK)
 
     return Response({"message": "Something went wrong when retrieving the transactions", 'err': response["err"]},
                     status=status.HTTP_409_CONFLICT)
 
 
-# TODO: TEST THIS
 @api_view(['GET'])
 def retrieve_transaction(request, transaction_id):
     response = get_ost_kit().transactions.retrieve(transaction_id=transaction_id)
 
     if response["success"]:
-        return Response(response['data'], status=status.HTTP_200_OK)
+        return Response(response["data"], status=status.HTTP_200_OK)
 
     return Response({"message": "Something went wrong when retrieving the transaction", 'err': response["err"]},
                     status=status.HTTP_409_CONFLICT)

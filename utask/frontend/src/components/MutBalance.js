@@ -5,16 +5,17 @@ import Typography from '@material-ui/core/Typography'
 
 const styles = theme => ({
   root: {
-    display: 'flex',
-    flexDirection: 'row'
+    display: 'inline-block'
   },
   amount: {
     color: '#777',
     fontSize: 18,
-    marginLeft: theme.spacing.unit
+    marginLeft: theme.spacing.unit,
+    display: 'inline-block'
   },
   image: {
-    marginTop: -2
+    display: 'inline-block',
+    verticalAlign: 'top'
   }
 })
 

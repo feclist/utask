@@ -8,6 +8,7 @@ import LoginModal from './components/LoginModal'
 import RegisterModal from './components/RegisterModal'
 import MarketPlace from './MarketPlace'
 import ApiClient from './utils/ApiClient';
+import TransactionList from './components/TransactionList';
 
 const styles = theme => ({
   root: {
@@ -118,6 +119,9 @@ class App extends Component {
         </AppBar>
         <div className={classes.pageContainer}>
           <MarketPlace />
+          <TransactionList />
+        </div>
+        <div>
         </div>
       </div>
     )
