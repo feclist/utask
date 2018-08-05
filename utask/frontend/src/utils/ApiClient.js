@@ -11,13 +11,23 @@ export default class ApiClient extends RestClient {
   }
 
   tasks = {
-    list: () => {
-      this.GET('/task/').then((response) => {
-        console.log(response)
-      })
+    list: async () => {
+      const body = await this.GET('/task/')
+      console.log(body)
+      return body
     },
     retrieve: async (id) => {
       const body = await this.GET('/task/' + id)
+      console.log(body)
+      return body
+    },
+    create: async (data) => {
+      const body = await this.POST('/task/', data)
+      console.log(body)
+      return body
+    },
+    startTask: async (id) => {
+      const body = await this.GET('/task/' + id + '/start_task/')
       console.log(body)
       return body
     }
@@ -55,6 +65,11 @@ export default class ApiClient extends RestClient {
     wallet: {
       retrieve: async () => {
         const body = await this.GET('/user/me/wallet/')
+        console.log(body)
+        return body
+      },
+      effectiveFunds: async () => {
+        const body = await this.GET('/user/me/wallet/effective_funds')
         console.log(body)
         return body
       },

@@ -11,11 +11,11 @@ class Profile(models.Model):
 class Task(models.Model):
     created_time = models.DateTimeField(default=utils.timezone.now)
     end_time = models.DateTimeField()
-    description = models.TextField(blank=True)
+    description = models.TextField()
     reward = models.FloatField()
     title = models.TextField()
-    type = models.TextField()
-    total_cost = models.IntegerField(blank=True)
+    type = models.TextField(blank=True)
+    total_cost = models.FloatField(blank=True)
     amount = models.IntegerField()
     active = models.BooleanField(default=True)
 

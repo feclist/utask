@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from api.models import Task, LiveTask, Profile, TaskReward
 from django.contrib.auth.models import User
+from api.utils import de_camelcase_ilator
 
 
 class TaskRewardSerializer(serializers.ModelSerializer):
@@ -22,6 +23,9 @@ class TaskSerializer(serializers.ModelSerializer):
     class Meta:
         model = Task
         fields = '__all__'
+
+    def to_internal_value(self, data):
+        return super().to_internal_value(de_camelcase_ilator(data))
 
 
 class ProfileSerializer(serializers.ModelSerializer):

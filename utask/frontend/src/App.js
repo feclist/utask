@@ -9,6 +9,7 @@ import RegisterModal from './components/RegisterModal'
 import MarketPlace from './MarketPlace'
 import ApiClient from './utils/ApiClient';
 import TransactionList from './components/TransactionList';
+import TaskCreation from './components/TaskCreation';
 
 const styles = theme => ({
   root: {
@@ -118,8 +119,9 @@ class App extends Component {
           </Toolbar>
         </AppBar>
         <div className={classes.pageContainer}>
+          <TaskCreation />
           <MarketPlace />
-          <TransactionList />
+          {/* <TransactionList /> */}
         </div>
         <div>
         </div>

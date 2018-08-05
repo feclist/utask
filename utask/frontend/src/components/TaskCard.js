@@ -8,6 +8,7 @@ import LinearProgress from '@material-ui/core/LinearProgress'
 import MutBalance from './MutBalance'
 
 import moment from 'moment'
+import { CircularProgress } from '../../node_modules/@material-ui/core';
 
 const styles = theme => ({
   root: {
@@ -24,6 +25,9 @@ const styles = theme => ({
     paddingBottom: theme.spacing.unit * 2,
     marginRight: theme.spacing.unit * 2
   },
+  buttonGroup: {
+    alignSelf: 'flex-end'
+  },
   button: {
     margin: theme.spacing.unit,
     alignSelf: 'flex-end'
@@ -39,7 +43,7 @@ const getLinearProgressValues = task => {
   return { value, valueBuffer }
 }
 
-const TaskCard = ({ task, classes }) => {
+const TaskCard = ({ task, onDoTask, loading, classes }) => {
   const linProValues = getLinearProgressValues(task)
   return (
     <Paper className={classes.root} elevation={4}>
@@ -62,9 +66,21 @@ const TaskCard = ({ task, classes }) => {
         variant="buffer"
         className={classes.progress}
       />
-      <Button variant="outlined" color="primary" className={classes.button}>
-        Do task
-      </Button>
+      {task.activeForUser ?
+        <div className={classes.buttonGroup}>
+          <Button variant="outlined" color="primary" className={classes.button}>
+            Resume
+          </Button><Button variant="outlined" color="secondary" className={classes.button}>
+            Cancel
+          </Button>
+        </div> :
+        <Button variant="outlined" color="primary" className={classes.button} onClick={onDoTask}>
+          { !loading ? 'Do Task' :
+          <CircularProgress size={14} />
+          }
+        </Button>
+      }
+
     </Paper>
   )
 }
