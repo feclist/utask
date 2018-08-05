@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django import utils
+from django.core.validators import MinValueValidator
 
 
 class Profile(models.Model):
@@ -12,11 +13,11 @@ class Task(models.Model):
     created_time = models.DateTimeField(default=utils.timezone.now)
     end_time = models.DateTimeField()
     description = models.TextField()
-    reward = models.FloatField()
+    reward = models.FloatField(validators=[MinValueValidator(float('0'))])
     title = models.TextField()
     type = models.TextField(blank=True)
     total_cost = models.FloatField(blank=True)
-    amount = models.IntegerField()
+    amount = models.IntegerField(validators=[MinValueValidator(1)])
     active = models.BooleanField(default=True)
 
     user = models.ForeignKey(User, on_delete=models.DO_NOTHING, blank=True)
