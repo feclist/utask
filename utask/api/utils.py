@@ -3,6 +3,8 @@ import re
 from decouple import config
 
 from ost_kit_python import OSTKit
+import random
+import colorsys
 
 
 def flatten_query_set(set, key='id'):
@@ -22,5 +24,11 @@ def calc_effective_funds(available_balance, user):
     """
     return float(available_balance) - sum(task.total_cost for task in user.task_set.all().filter(active=True))
 
+
 def de_camelcase_ilator(data):
-    return {re.sub( '(?<!^)(?=[A-Z])', '_', key ).lower(): value for (key, value) in data.items()}
+    return {re.sub('(?<!^)(?=[A-Z])', '_', key).lower(): value for (key, value) in data.items()}
+
+
+def generate_bright_color():
+    r, g, b = [(round(random.random()*127) + 127) for i in range(1, 4)]
+    return "rgb({},{},{})".format(r, g, b)

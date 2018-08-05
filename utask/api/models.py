@@ -2,11 +2,14 @@ from django.db import models
 from django.contrib.auth.models import User
 from django import utils
 from django.core.validators import MinValueValidator
+from api.utils import generate_bright_color
 
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     ost_id = models.TextField(blank=True)
+    top_color = models.TextField(default=generate_bright_color)
+    bottom_color = models.TextField(default=generate_bright_color)
 
 
 class Task(models.Model):
