@@ -6,6 +6,7 @@ import Toolbar from '@material-ui/core/Toolbar'
 import Button from '@material-ui/core/Button'
 import LoginModal from './components/LoginModal'
 import RegisterModal from './components/RegisterModal'
+import UserDashboard from './UserDashboard'
 import MarketPlace from './MarketPlace'
 import ApiClient from './utils/ApiClient';
 import TransactionList from './components/TransactionList';
@@ -148,8 +149,9 @@ class App extends Component {
           </Toolbar>
         </AppBar>
         <div className={classes.pageContainer}>
-          <TaskCreation />
-          <MarketPlace />
+          <UserDashboard />
+          {/* <TaskCreation />
+          <MarketPlace /> */}
           {/* <TransactionList /> */}
         </div>
         <div>

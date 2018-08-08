@@ -28,6 +28,11 @@ const styles = theme => ({
         '& > span:first-child': {
             marginRight: theme.spacing.unit,
         }
+    },
+    taskDrawerTrigger: {
+        color: '#27b6da',
+        cursor: 'pointer',
+        borderBottom: '1px solid',
     }
 })
 
@@ -65,7 +70,7 @@ class Transaction extends React.Component {
                         }
                     </Typography>
                     <Typography variant="body1" gutterBottom>
-                        {this.props.transaction.task_id && <p>Belongs to <u onClick={this.props.triggerTaskDrawer}>this task</u></p>}
+                        {this.props.transaction.task_id && <p>Belongs to <span className={classes.taskDrawerTrigger} onClick={this.props.triggerTaskDrawer}>this task</span></p>}
                     </Typography>
                 </div>
             </ListItem>

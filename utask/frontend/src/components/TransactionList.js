@@ -8,7 +8,6 @@ import List from '@material-ui/core/List';
 const styles = theme => ({
     root: {
         width: '100%',
-        maxWidth: 500,
         backgroundColor: theme.palette.background.paper,
     },
 })
