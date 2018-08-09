@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
 import TaskCard from './components/TaskCard'
 import { Snackbar } from '../node_modules/@material-ui/core';
+import { connect } from 'react-redux'
 
-export default class MarketPlace extends Component {
+class MarketPlace extends Component {
   constructor(props) {
     super(props)
     
@@ -51,8 +52,8 @@ export default class MarketPlace extends Component {
   }
 
   async componentDidMount() {
-    const tasks = await window.apiClient.tasks.list()
-    const me = await window.apiClient.me.retrieve()
+    const {apiClient, me} = this.props
+    const tasks = await apiClient.tasks.list()
     tasks.map((task) => {
       task.activeForUser = task.live_tasks.map((l_task) => l_task.user).indexOf(me.id) !== -1
       return task
@@ -64,9 +65,9 @@ export default class MarketPlace extends Component {
   async onDoTask(taskId) {
     this.setState({loadingTask: taskId})
 
-    const liveTask = await window.apiClient.tasks.startTask(taskId)
+    const liveTask = await this.props.apiClient.tasks.startTask(taskId)
     if (liveTask.id) {
-      const freshTask = await window.apiClient.tasks.retrieve(taskId)
+      const freshTask = await this.props.apiClient.tasks.retrieve(taskId)
       freshTask.activeForUser = true
       const newTasks = this.state.tasks.slice()
       console.log(this.state.tasks.findIndex((task) => {console.log(task.id); console.log(liveTask.task)}))
@@ -112,3 +113,14 @@ export default class MarketPlace extends Component {
     )
   }
 }
+
+const mapStateToProps = state => ({
+  apiClient: state.account.apiClient,
+  user: state.account.me
+})
+
+const mapDispatchToProps = dispatch => ({
+  retrieveMe: apiClient => dispatch(retrieveMe(apiClient)),
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(Marketplace)

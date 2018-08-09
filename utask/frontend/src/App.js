@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
 import { withStyles } from '@material-ui/core/styles'
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
@@ -8,10 +9,15 @@ import LoginModal from './components/LoginModal'
 import RegisterModal from './components/RegisterModal'
 import UserDashboard from './UserDashboard'
 import MarketPlace from './MarketPlace'
+import { retrieveMe } from './actions/account'
+import { Route, Switch } from 'react-router'
+import { withRouter } from 'react-router-dom'
+import { push } from 'connected-react-router'
 import ApiClient from './utils/ApiClient';
 import TransactionList from './components/TransactionList';
 import TaskCreation from './components/TaskCreation';
-import { Avatar, Grid } from '../node_modules/@material-ui/core';
+import Avatar from '@material-ui/core/Avatar';
+import Grid from '@material-ui/core/Grid';
 
 const styles = theme => ({
   root: {
@@ -39,6 +45,7 @@ const styles = theme => ({
     textAlign: 'center',
     display: 'block',
     fontSize: 36,
+    cursor: 'pointer',
     fontFamily: 'Shree714',
     background: '-webkit-linear-gradient(293deg, #f171ab, #f35f5f)',
     '-webkit-background-clip': 'text',
@@ -75,22 +82,23 @@ class App extends Component {
     this.setState({ registerModalOpen: false })
   }
 
-  componentWillMount = () => {
-    window.apiClient = new ApiClient('/api')
-    window.apiClient.me.retrieve().then((response) => {
-      this.setState({ me: response })
-    })
+  componentDidMount = () => {
+    if (window.localStorage.token) {
+      this.props.retrieveMe(this.props.apiClient)
+    }
   }
 
   render() {
-    const { classes } = this.props
+    const { classes, apiClient } = this.props
     return (
       <div className={classes.root}>
         <LoginModal
+          apiClient={apiClient}
           open={this.state.loginModalOpen}
           handleClose={this.handleLoginClose}
         />
         <RegisterModal
+          apiClient={apiClient}
           open={this.state.registerModalOpen}
           handleClose={this.handleRegisterClose}
         />
@@ -105,14 +113,23 @@ class App extends Component {
                     className={classes.button}
                   >
                     Create task
-              </Button>
-                  <Button color="primary" className={classes.button}>
+                  </Button>
+                  <Button
+                    color="primary"
+                    className={classes.button}
+                    onClick={() => this.props.push('/marketplace')}
+                  >
                     Marketplace
-              </Button>
+                  </Button>
                 </div>
               </Grid>
               <Grid item xs={4}>
-                <span className={classes.title}>µ t a s k</span>
+                <span
+                  className={classes.title}
+                  onClick={() => this.props.push('/')}
+                >
+                  µ t a s k
+                </span>
               </Grid>
               <Grid item xs={4}>
                 {window.localStorage.token ?
@@ -149,12 +166,10 @@ class App extends Component {
           </Toolbar>
         </AppBar>
         <div className={classes.pageContainer}>
-          <UserDashboard />
-          {/* <TaskCreation />*/}
-          {/* <MarketPlace />  */}
-          {/* <TransactionList /> */}
-        </div>
-        <div>
+          <Switch>
+            <Route exact path="/" render={() => <div>HOMEPAGE</div>} />
+            <Route path="/marketplace" render={() => <MarketPlace />} />
+          </Switch>
         </div>
       </div>
     )
@@ -165,4 +180,19 @@ App.propTypes = {
   classes: PropTypes.object.isRequired
 }
 
-export default withStyles(styles)(App)
+const mapStateToProps = state => ({
+  apiClient: state.account.apiClient,
+  user: state.account.me
+})
+
+const mapDispatchToProps = dispatch => ({
+  retrieveMe: apiClient => dispatch(retrieveMe(apiClient)),
+  push: url => dispatch(push(url))
+})
+
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(withStyles(styles)(App))
+)

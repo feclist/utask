@@ -1,12 +1,11 @@
 import RestClient from './RestClient'
-import { TableBody } from '../../node_modules/@material-ui/core';
 
 /**
  * API docs hosted on the backend at /api/documentation
  */
 export default class ApiClient extends RestClient {
   constructor(baseUrl) {
-    console.log('constructing apiClient with base: ', '/api')
+    console.log('constructing apiClient with base: ', baseUrl)
     super(baseUrl, {})
   }
 
@@ -41,7 +40,10 @@ export default class ApiClient extends RestClient {
   users = {
     // This isn't actually supposed to be here..
     login: async (username, pass) => {
-      const body = await this.POST('/obtain-auth-token/', { username: username, password: pass })
+      const body = await this.POST('/obtain-auth-token/', {
+        username: username,
+        password: pass
+      })
       console.log(body)
       if ('token' in body) window.localStorage.token = body.token
       return body
@@ -51,12 +53,12 @@ export default class ApiClient extends RestClient {
       window.localStorage.removeItem('token')
     },
     list: () => {
-      this.GET('/user/').then((response) => {
+      this.GET('/user/').then(response => {
         console.log(response)
       })
     },
-    retrieve: (id) => {
-      this.GET('/user/' + id).then((response) => {
+    retrieve: id => {
+      this.GET('/user/' + id).then(response => {
         console.log(response)
       })
     }
@@ -83,8 +85,8 @@ export default class ApiClient extends RestClient {
           console.log(response)
         })
       },
-      sell: (amount) => {
-        this.POST('/user/me/wallet/sell/' + amount).then((response) => {
+      sell: amount => {
+        this.POST('/user/me/wallet/sell/' + amount).then(response => {
           console.log(response)
         })
       },
@@ -94,14 +96,12 @@ export default class ApiClient extends RestClient {
           console.log(body)
           return body
         },
-        retrieve: (id) => {
-          this.POST('/user/me/wallet/transactions/' + id).then((response) => {
+        retrieve: id => {
+          this.POST('/user/me/wallet/transactions/' + id).then(response => {
             console.log(response)
           })
         }
       }
     }
   }
-
-
 }
