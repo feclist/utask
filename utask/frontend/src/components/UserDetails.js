@@ -15,19 +15,16 @@ const styles = theme => ({
     }
 })
 
-class Wallet extends React.Component {
+class UserDetails extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            wallet: undefined,
             effectiveFunds: 0,
         }
     }
 
     async componentDidMount() {
-        const wallet = await this.props.apiClient.me.wallet.retrieve()
         const effectiveFunds = await this.props.apiClient.me.wallet.effectiveFunds()
-        if (wallet.balance !== undefined) this.setState({ wallet: wallet.balance })
         if (effectiveFunds.effective_funds) this.setState({ effectiveFunds: effectiveFunds.effective_funds})
     }
 
@@ -35,13 +32,25 @@ class Wallet extends React.Component {
         return (
             <div>
                 <Typography variant='title'>Wallet details</Typography>
-                <div style={{ display: 'inline-block' }}>
-                    <span>Token balance</span>{this.state.wallet && <MutBalance amount={this.state.wallet.available_balance} />}
+                <div>
+                    <span>Token balance</span>{this.props.wallet && <MutBalance amount={this.props.wallet.available_balance} />}
                 </div>
-                <div style={{ display: 'inline-block' }}>
+                <div>
                     <span>Effective funds</span><MutBalance amount={this.state.effectiveFunds} />
                 </div>
+                <div>
+                    <span><strong>{this.props.transactions.length}</strong> total transactions</span>
+                </div>
                 <Typography variant='title'>Your tasks</Typography>
+                <div>
+                    <span>You completed&nbsp;<strong>{this.props.completedTasks.length}</strong> task{this.props.completedTasks.length > 1 && 's'}</span>
+                </div>
+                <div>
+                    <span>You're working on&nbsp;<strong>{this.props.liveTasks.length}</strong> task{this.props.liveTasks.length > 1 && 's'}</span>
+                </div>
+                <div>
+                    <span>You created&nbsp;<strong>{this.props.myTasks.length}</strong> task{this.props.myTasks.length > 1 && 's'}</span>
+                </div>
             </div>
         )
     }
@@ -62,5 +71,5 @@ export default withRouter(
     connect(
         mapStateToProps,
         mapDispatchToProps
-    )(withStyles(styles)(Wallet))
+    )(withStyles(styles)(UserDetails))
 )

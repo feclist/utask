@@ -127,6 +127,14 @@ class LiveTaskReadOnlyViewSet(viewsets.ReadOnlyModelViewSet):
         return Response({"message": "Something went wrong when completing the task", 'err': response["err"]},
                         status=status.HTTP_409_CONFLICT)
 
+    # PROBLEM HERE IS THAT YOU CAN GIVE ANY ID AND THERES NO CHECK WHETHER THIS USER 
+    # IS ACTUALLY ALLOWED TO ASK DATA BELONGING TO THOSE ACTIVE TASKS
+    @action(methods=['get'], detail=True)
+    def retrieve_from_task(self, request, pk=None):
+        task = Task.objects.get(pk=pk)
+        print(request.user.livetask_set.all())
+        return Response(LiveTaskSerializer(request.user.livetask_set.get(task__pk=task.id)).data, status=status.HTTP_200_OK)
+
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
@@ -244,3 +252,7 @@ def retrieve_transaction(request, transaction_id):
 
     return Response({"message": "Something went wrong when retrieving the transaction", 'err': response["err"]},
                     status=status.HTTP_409_CONFLICT)
+
+@api_view(['GET'])
+def list_tasks_from_user(request):
+    return Response(TaskSerializer(request.user.task_set.all(), many=True).data, status=status.HTTP_200_OK)

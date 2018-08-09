@@ -35,20 +35,8 @@ class TaskList extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      live_tasks: [],
-      completed_tasks: []
+      loadingTask: -1,
     }
-  }
-
-  async componentDidMount() {
-    const taskResponse = await this.props.apiClient.tasks.userTasks()
-    this.setState({
-      live_tasks: taskResponse.live_tasks.map(task => {
-        task.activeForUser = true
-        return task
-      }),
-      completed_tasks: taskResponse.completed_tasks
-    })
   }
 
   render() {
@@ -58,7 +46,7 @@ class TaskList extends React.Component {
         <span className={classes.dividerText}>Active tasks</span>
         <Divider />
         <div className={classes.listWrapper}>
-          {this.state.live_tasks.map(
+          {this.props.liveTasks.map(
             task =>
               task !== undefined && (
                 <TaskCard
@@ -73,7 +61,7 @@ class TaskList extends React.Component {
         <span className={classes.dividerText}>Completed tasks</span>
         <Divider />
         <div className={classes.listWrapper}>
-          {this.state.completed_tasks.map(
+          {this.props.completedTasks.map(
             task =>
               task !== undefined && (
                 <TaskWrapper key={task.id}>

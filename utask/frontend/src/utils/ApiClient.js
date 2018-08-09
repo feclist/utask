@@ -100,6 +100,12 @@ export default class ApiClient extends RestClient {
           })
         }
       }
+    },
+    tasks: {
+      list: async () => {
+        const body = await this.GET('/user/me/tasks/')
+        return body
+      },
     }
   }
 }
