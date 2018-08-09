@@ -9,6 +9,8 @@ import MutBalance from './MutBalance'
 
 import moment from 'moment'
 import { CircularProgress } from '../../node_modules/@material-ui/core';
+import TaskDetail from './TaskDetail';
+import TaskWrapper from './TaskWrapper';
 
 const styles = theme => ({
   root: {
@@ -46,21 +48,8 @@ const getLinearProgressValues = task => {
 const TaskCard = ({ task, onDoTask, loading, classes }) => {
   const linProValues = getLinearProgressValues(task)
   return (
-    <Paper className={classes.root} elevation={4}>
-      <div className={classes.titleLine}>
-        <Typography variant="title">{task.title}</Typography>
-        <MutBalance amount={task.reward} />
-      </div>
-      <Typography variant="subheading" gutterBottom>
-        Finish by{' '}
-        {moment
-          .utc(task.end_time)
-          .local()
-          .format('HH:mm MMMM Do')}
-      </Typography>
-      <Typography variant="body1" gutterBottom>
-        {task.description}
-      </Typography>
+    <TaskWrapper>
+      <TaskDetail task={task} />
       <LinearProgress
         {...linProValues}
         variant="buffer"
@@ -81,7 +70,7 @@ const TaskCard = ({ task, onDoTask, loading, classes }) => {
         </Button>
       }
 
-    </Paper>
+    </TaskWrapper>
   )
 }
 

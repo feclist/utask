@@ -29,8 +29,6 @@ class TransactionList extends React.Component {
     async componentDidMount() {
         const transactionResponse = await window.apiClient.me.wallet.transactions.list()
         const meResponse = await window.apiClient.me.retrieve()
-        console.log(transactionResponse)
-        console.log(transactionResponse.transactions[0])
         this.setState({ 
             transactions: transactionResponse.transactions,
             me: meResponse,
@@ -55,12 +53,12 @@ class TransactionList extends React.Component {
     render() {
         const { classes, ...other } = this.props
         return (
-            <div className={classes.root}>
+            <div className={classes.root} style={this.props.style}>
                 <List>
                     {this.state.transactions.map((transaction) =>
                         transaction !== undefined && 
-                            <div>
-                                <Transaction key={transaction.id} transaction={transaction} ostId={this.state.me.profile.ost_id} triggerTaskDrawer={() => this.triggerTaskDrawer(transaction)} />
+                            <div key={transaction.id}>
+                                <Transaction transaction={transaction} ostId={this.state.me.profile.ost_id} triggerTaskDrawer={() => this.triggerTaskDrawer(transaction)} />
                                 <Divider />
                             </div>
                     )}

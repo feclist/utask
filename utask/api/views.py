@@ -72,6 +72,21 @@ class TaskViewSet(viewsets.ModelViewSet):
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+    @action(methods=['get'], detail=False)
+    def retrieve_user_tasks(self, request):
+        user = request.user
+        live_tasks = user.livetask_set.all()
+        completed_tasks = user.taskreward_set.all()
+        print(live_tasks)
+        print(completed_tasks)
+        print([task_reward.task for task_reward in completed_tasks])
+
+        return Response(
+            {
+                'completed_tasks': TaskSerializer([task_reward.task for task_reward in completed_tasks], many=True).data,
+                'live_tasks': TaskSerializer([live_task.task for live_task in live_tasks], many=True).data
+            }, status=status.HTTP_200_OK)
+
 
 class LiveTaskReadOnlyViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = LiveTask.objects.all()

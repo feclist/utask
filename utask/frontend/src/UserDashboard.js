@@ -3,6 +3,7 @@ import { withStyles } from '@material-ui/core/styles'
 import { Tabs } from '../node_modules/@material-ui/core';
 import Tab from '@material-ui/core/Tab';
 import TransactionList from './components/TransactionList';
+import TaskList from './components/TaskList';
 
 
 const styles = theme => ({
@@ -39,8 +40,8 @@ class UserDashboard extends React.Component {
                     <Tab label="Tasks" value={0} />
                     <Tab label="Transaction history" value={1} />
                 </Tabs>
-                {this.state.value === 0 && <div>hoaifj</div>}
-                {this.state.value === 1 && <TransactionList />}
+                <TaskList style={{display: this.state.value === 0 ? 'block' : 'none'}} />
+                <TransactionList style={{display: this.state.value === 1 ? 'block' : 'none'}} />
             </div>
         )
     }

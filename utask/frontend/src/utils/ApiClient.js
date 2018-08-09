@@ -30,6 +30,11 @@ export default class ApiClient extends RestClient {
       const body = await this.GET('/task/' + id + '/start_task/')
       console.log(body)
       return body
+    },
+    userTasks: async () => {
+      const body = await this.GET('/task/retrieve_user_tasks')
+      console.log(body)
+      return body
     }
   }
 
