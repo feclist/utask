@@ -60,8 +60,6 @@ class MarketPlace extends Component {
         task.live_tasks.map(l_task => l_task.user).indexOf(me.id) !== -1
       return task
     })
-    console.log('asoifjoiasdjfoidsajoifj')
-    console.log(tasks)
     this.setState({ tasks: tasks })
   }
 
