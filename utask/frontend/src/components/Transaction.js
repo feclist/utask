@@ -87,9 +87,8 @@ class Transaction extends React.Component {
               </div>
             )}
           </div>
-          <Typography variant="body1" gutterBottom>
             {this.props.transaction.task_id && (
-              <p>
+              <Typography variant="body1" gutterBottom>
                 Belongs to{' '}
                 <span
                   className={classes.taskDrawerTrigger}
@@ -97,9 +96,8 @@ class Transaction extends React.Component {
                 >
                   this task
                 </span>
-              </p>
+              </Typography>
             )}
-          </Typography>
         </div>
       </ListItem>
     )

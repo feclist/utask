@@ -27,10 +27,7 @@ class TransactionList extends React.Component {
   }
 
   async componentDidMount() {
-    console.log(this.props)
     const transactionResponse = await this.props.apiClient.me.wallet.transactions.list()
-    console.log(transactionResponse)
-    console.log(transactionResponse.transactions[0])
     this.setState({
       transactions: transactionResponse.transactions
     })
@@ -40,7 +37,6 @@ class TransactionList extends React.Component {
     const taskResponse = this.props.apiClient.tasks
       .retrieve(transaction.task_id)
       .then(task => {
-        console.log(task)
         this.setState({
           drawerTask: task,
           drawerTransaction: transaction

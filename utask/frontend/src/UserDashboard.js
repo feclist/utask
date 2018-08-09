@@ -40,10 +40,11 @@ class UserDashboard extends React.Component {
                             fullWidth
                         >
                             <Tab label="Tasks" value={0} />
-                            <Tab label="Transaction history" value={1} />
+                            <Tab label="Your Tasks" value={1} />
+                            <Tab label="Transaction history" value={2} />
                         </Tabs>
                         <TaskList style={{ display: this.state.value === 0 ? 'block' : 'none' }} />
-                        <TransactionList style={{ display: this.state.value === 1 ? 'block' : 'none' }} />
+                        <TransactionList style={{ display: this.state.value === 2 ? 'block' : 'none' }} />
                     </Grid>
                     <Grid item xs={4}>
                         <Wallet />

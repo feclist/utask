@@ -87,6 +87,19 @@ class TaskViewSet(viewsets.ModelViewSet):
                 'live_tasks': TaskSerializer([live_task.task for live_task in live_tasks], many=True).data
             }, status=status.HTTP_200_OK)
 
+    # PROBLEM HERE IS THAT YOU CAN GIVE ANY ID AND THERES NO CHECK WHETHER THIS USER 
+    # IS ACTUALLY ALLOWED TO ASK DATA BELONGING TO THOSE ACTIVE TASKS
+    @action(methods=['get'], detail=True)
+    def retrieve_from_live_task(self, request, pk=None):
+        live_task = LiveTask.objects.get(pk=pk)
+        return Response(TaskSerializer(live_task.task), status=status.HTTP_200_OK)
+
+    # SOME GOES FOR THIS ONE
+    @action(methods=['get'], detail=True)
+    def retrieve_from_completed_task(self, request, pk=None):
+        completed_task = TaskReward.objects.get(pk=pk)
+        return Response(TaskSerializer(completed_task.task), status=status.HTTP_200_OK)
+
 
 class LiveTaskReadOnlyViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = LiveTask.objects.all()

@@ -12,27 +12,30 @@ export default class ApiClient extends RestClient {
   tasks = {
     list: async () => {
       const body = await this.GET('/task/')
-      console.log(body)
       return body
     },
     retrieve: async (id) => {
       const body = await this.GET('/task/' + id)
-      console.log(body)
       return body
     },
     create: async (data) => {
       const body = await this.POST('/task/', data)
-      console.log(body)
       return body
     },
     startTask: async (id) => {
       const body = await this.GET('/task/' + id + '/start_task/')
-      console.log(body)
       return body
     },
     userTasks: async () => {
       const body = await this.GET('/task/retrieve_user_tasks')
-      console.log(body)
+      return body
+    },
+    retrieveFromLiveTask: async (id) => {
+      const body = await this.GET('/task/' + id + '/retrieve_from_live_task')
+      return body
+    },
+    retrieveFromCompletedTask: async (id) => {
+      const body = await this.GET('/task/' + id + '/retrieve_from_completed_task')
       return body
     }
   }
@@ -44,7 +47,6 @@ export default class ApiClient extends RestClient {
         username: username,
         password: pass
       })
-      console.log(body)
       if ('token' in body) window.localStorage.token = body.token
       return body
     },
@@ -66,18 +68,15 @@ export default class ApiClient extends RestClient {
   me = {
     retrieve: async () => {
       const body = await this.GET('/user/me/')
-      console.log(body)
       return body
     },
     wallet: {
       retrieve: async () => {
         const body = await this.GET('/user/me/wallet/')
-        console.log(body)
         return body
       },
       effectiveFunds: async () => {
         const body = await this.GET('/user/me/wallet/effective_funds')
-        console.log(body)
         return body
       },
       buy: (amount) => {
@@ -93,7 +92,6 @@ export default class ApiClient extends RestClient {
       transactions: {
         list: async () => {
           const body = await this.GET('/user/me/wallet/transactions/')
-          console.log(body)
           return body
         },
         retrieve: id => {

@@ -54,8 +54,6 @@ export default class RestClient {
       Object.assign(opts, { body: JSON.stringify(body) })
     }
     let promise = await fetch(fullRoute, opts)
-    console.log('Logging response =>')
-    console.log(promise)
     return this._handleError(promise)
   }
 
