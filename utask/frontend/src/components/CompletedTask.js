@@ -2,15 +2,11 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { withStyles } from '@material-ui/core/styles'
 import Typography from '@material-ui/core/Typography'
-import Paper from '@material-ui/core/Paper'
 import Button from '@material-ui/core/Button'
 import LinearProgress from '@material-ui/core/LinearProgress'
 import MutBalance from './MutBalance'
 
 import moment from 'moment'
-import { CircularProgress } from '../../node_modules/@material-ui/core';
-import TaskDetail from './TaskDetail';
-import TaskWrapper from './TaskWrapper';
 
 const styles = theme => ({
   root: {
@@ -27,9 +23,6 @@ const styles = theme => ({
     paddingBottom: theme.spacing.unit * 2,
     marginRight: theme.spacing.unit * 2
   },
-  buttonGroup: {
-    alignSelf: 'flex-end'
-  },
   button: {
     margin: theme.spacing.unit,
     alignSelf: 'flex-end'
@@ -45,35 +38,28 @@ const getLinearProgressValues = task => {
   return { value, valueBuffer }
 }
 
-const TaskCard = ({ task, onDoTask, loading, classes }) => {
+const CompletedTask = ({ task, transaction, classes }) => {
   const linProValues = getLinearProgressValues(task)
   return (
-    <TaskWrapper>
-      <TaskDetail task={task} />
-      <LinearProgress
-        {...linProValues}
-        variant="buffer"
-        className={classes.progress}
-      />
-      {task.activeForUser ?
-        <div className={classes.buttonGroup}>
-          <Button variant="outlined" color="primary" className={classes.button}>
-            Resume
-          </Button><Button variant="outlined" color="secondary" className={classes.button}>
-            Cancel
-          </Button>
-        </div> :
-        <Button variant="outlined" color="primary" className={classes.button} onClick={onDoTask}>
-          { !loading ? 'Do Task' :
-          <CircularProgress size={14} />
-          }
-        </Button>
-      }
-
-    </TaskWrapper>
+    <div className={classes.root}>
+      <div className={classes.titleLine}>
+        <Typography variant="title">{task.title}</Typography>
+        <MutBalance amount={task.reward} />
+      </div>
+      <Typography variant="subheading" gutterBottom>
+        You completed this task on{' '}
+        {moment
+          .utc(transaction.timestamp)
+          .local()
+          .format('DD/MM/YYYY')}
+      </Typography>
+      <Typography variant="body1" gutterBottom>
+        {task.description}
+      </Typography>
+    </div>
   )
 }
 
-TaskCard.propTypes = {}
+CompletedTask.propTypes = {}
 
-export default withStyles(styles)(TaskCard)
+export default withStyles(styles)(CompletedTask)

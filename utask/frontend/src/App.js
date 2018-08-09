@@ -7,11 +7,17 @@ import Toolbar from '@material-ui/core/Toolbar'
 import Button from '@material-ui/core/Button'
 import LoginModal from './components/LoginModal'
 import RegisterModal from './components/RegisterModal'
+import UserDashboard from './UserDashboard'
 import MarketPlace from './MarketPlace'
 import { retrieveMe } from './actions/account'
 import { Route, Switch } from 'react-router'
 import { withRouter } from 'react-router-dom'
 import { push } from 'connected-react-router'
+import ApiClient from './utils/ApiClient';
+import TransactionList from './components/TransactionList';
+import TaskCreation from './components/TaskCreation';
+import Avatar from '@material-ui/core/Avatar';
+import Grid from '@material-ui/core/Grid';
 
 const styles = theme => ({
   root: {
@@ -36,12 +42,17 @@ const styles = theme => ({
     margin: theme.spacing.unit
   },
   title: {
+    textAlign: 'center',
+    display: 'block',
     fontSize: 36,
     cursor: 'pointer',
     fontFamily: 'Shree714',
     background: '-webkit-linear-gradient(293deg, #f171ab, #f35f5f)',
     '-webkit-background-clip': 'text',
     '-webkit-text-fill-color': 'transparent'
+  },
+  avatarIcon: {
+    background: 'none'
   },
   '@font-face': {
     fontFamily: 'Shree714',
@@ -93,45 +104,65 @@ class App extends Component {
         />
         <AppBar position="static" color="default" className={classes.appBar}>
           <Toolbar className={classes.toolBar}>
-            <div>
-              <Button
-                variant="outlined"
-                color="primary"
-                className={classes.button}
-              >
-                Create task
-              </Button>
-              <Button
-                color="primary"
-                className={classes.button}
-                onClick={() => this.props.push('/marketplace')}
-              >
-                Marketplace
-              </Button>
-            </div>
-            <span
-              onClick={() => this.props.push('/')}
-              className={classes.title}
-            >
-              µ t a s k
-            </span>
-            <div>
-              <Button
-                color="primary"
-                className={classes.button}
-                onClick={this.handleLoginOpen}
-              >
-                Sign in
-              </Button>
-              <Button
-                variant="outlined"
-                color="primary"
-                className={classes.button}
-                onClick={this.handleRegisterOpen}
-              >
-                Get started
-              </Button>
-            </div>
+            <Grid container spacing={24}>
+              <Grid item xs={4}>
+                <div>
+                  <Button
+                    variant="outlined"
+                    color="primary"
+                    className={classes.button}
+                  >
+                    Create task
+                  </Button>
+                  <Button
+                    color="primary"
+                    className={classes.button}
+                    onClick={() => this.props.push('/marketplace')}
+                  >
+                    Marketplace
+                  </Button>
+                </div>
+              </Grid>
+              <Grid item xs={4}>
+                <span
+                  className={classes.title}
+                  onClick={() => this.props.push('/')}
+                >
+                  µ t a s k
+                </span>
+              </Grid>
+              <Grid item xs={4}>
+                {window.localStorage.token ?
+                  <div style={{
+                    background: this.state.me ? 'linear-gradient(-69deg, ' + this.state.me.profile.top_color + ', ' + this.state.me.profile.bottom_color + ')' : '',
+                    borderRadius: '50%',
+                    width: 40,
+                    height: 40,
+                    margin: 'auto',
+                  }}>
+                    <Avatar className={classes.avatarIcon}>{this.state.me && this.state.me.username.charAt(0).toUpperCase()}</Avatar>
+                  </div>
+                  :
+                  <div>
+                    <Button
+                      color="primary"
+                      className={classes.button}
+                      onClick={this.handleLoginOpen}
+                    >
+                      Sign in
+                </Button>
+                    <Button
+                      variant="outlined"
+                      color="primary"
+                      className={classes.button}
+                      onClick={this.handleRegisterOpen}
+                    >
+                      Get started
+                </Button>
+                  </div>
+                }
+              </Grid>
+            </Grid>
           </Toolbar>
         </AppBar>
         <div className={classes.pageContainer}>

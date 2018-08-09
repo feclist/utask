@@ -10,15 +10,30 @@ export default class ApiClient extends RestClient {
   }
 
   tasks = {
-    list: () => {
-      this.GET('/task/').then(response => {
-        console.log(response)
-      })
+    list: async () => {
+      const body = await this.GET('/task/')
+      console.log(body)
+      return body
     },
-    retrieve: id => {
-      this.GET('/task/' + id).then(response => {
-        console.log(response)
-      })
+    retrieve: async (id) => {
+      const body = await this.GET('/task/' + id)
+      console.log(body)
+      return body
+    },
+    create: async (data) => {
+      const body = await this.POST('/task/', data)
+      console.log(body)
+      return body
+    },
+    startTask: async (id) => {
+      const body = await this.GET('/task/' + id + '/start_task/')
+      console.log(body)
+      return body
+    },
+    userTasks: async () => {
+      const body = await this.GET('/task/retrieve_user_tasks')
+      console.log(body)
+      return body
     }
   }
 
@@ -60,8 +75,13 @@ export default class ApiClient extends RestClient {
         console.log(body)
         return body
       },
-      buy: amount => {
-        this.POST('/user/me/wallet/buy/' + amount).then(response => {
+      effectiveFunds: async () => {
+        const body = await this.GET('/user/me/wallet/effective_funds')
+        console.log(body)
+        return body
+      },
+      buy: (amount) => {
+        this.POST('/user/me/wallet/buy/' + amount).then((response) => {
           console.log(response)
         })
       },

@@ -17,8 +17,13 @@ class TaskViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)
 
     def create(self, request, *args, **kwargs):
+        print(request.data)
         request.data["user"] = request.user.pk
-        request.data["total_cost"] = int(request.data["amount"] * request.data["reward"])
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        request.data["total_cost"] = int(
+            request.data["amount"]) * float(request.data["reward"])
+        print(request.data["total_cost"])
 
         response = get_ost_kit().balances.retrieve(user_id=request.user.profile.ost_id)
 
@@ -28,7 +33,7 @@ class TaskViewSet(viewsets.ModelViewSet):
 
         # See if there's enough funds
         if calc_effective_funds(response["data"]["balance"]["available_balance"], request.user) >= request.data[
-            "total_cost"]:
+                "total_cost"]:
             serializer = self.get_serializer(data=request.data)
             serializer.is_valid(raise_exception=True)
             self.perform_create(serializer)
@@ -67,6 +72,21 @@ class TaskViewSet(viewsets.ModelViewSet):
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+    @action(methods=['get'], detail=False)
+    def retrieve_user_tasks(self, request):
+        user = request.user
+        live_tasks = user.livetask_set.all()
+        completed_tasks = user.taskreward_set.all()
+        print(live_tasks)
+        print(completed_tasks)
+        print([task_reward.task for task_reward in completed_tasks])
+
+        return Response(
+            {
+                'completed_tasks': TaskSerializer([task_reward.task for task_reward in completed_tasks], many=True).data,
+                'live_tasks': TaskSerializer([live_task.task for live_task in live_tasks], many=True).data
+            }, status=status.HTTP_200_OK)
+
 
 class LiveTaskReadOnlyViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = LiveTask.objects.all()
@@ -104,7 +124,8 @@ class UserViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        response = get_ost_kit().users.create(name=serializer.validated_data["username"])
+        response = get_ost_kit().users.create(
+            name=serializer.validated_data["username"])
 
         if response["success"]:
             user = serializer.save()
@@ -118,6 +139,17 @@ class UserViewSet(viewsets.ModelViewSet):
     @action(methods=['get'], detail=False)
     def me(self, request, pk=None):
         return Response(UserSerializer(request.user).data, status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+def effective_funds(request):
+    response = get_ost_kit().balances.retrieve(user_id=request.user.profile.ost_id)
+
+    if response["success"]:
+        return Response({'effective_funds': calc_effective_funds(response["data"]["balance"]["available_balance"], request.user)}, status=status.HTTP_200_OK)
+
+    return Response({"message": "Something went wrong when retrieving the effective funds", 'err': response["err"]},
+                    status=status.HTTP_409_CONFLICT)
 
 
 @api_view(['GET'])
@@ -157,7 +189,8 @@ def sell_tokens_to_company(request, amount):
     response = get_ost_kit().balances.retrieve(user_id=request.user.profile.ost_id)
     if calc_effective_funds(response["data"]["balance"]["available_balance"], request.user) >= float(amount):
         response = get_ost_kit().transactions.execute(from_user_id=request.user.profile.ost_id,
-                                                      to_user_id=config('COMPANY_UUID'),
+                                                      to_user_id=config(
+                                                          'COMPANY_UUID'),
                                                       action_id=39581,
                                                       amount=amount)
         if response["success"]:
@@ -174,12 +207,14 @@ def list_transactions(request):
 
     if response["success"]:
         actions = get_ost_kit().actions.list()
-        action_list = {int(action["id"]): action for action in actions["data"]["actions"]}
+        action_list = {
+            int(action["id"]): action for action in actions["data"]["actions"]}
         data = response["data"]["transactions"]
         for transaction in data:
-            reward = TaskReward.objects.filter(transaction_id=transaction["id"]).first()
+            reward = TaskReward.objects.filter(
+                transaction_id=transaction["id"]).first()
             if reward:
-                transaction["task_id"] = reward.id
+                transaction["task_id"] = reward.task.id
             transaction["action"] = action_list[int(transaction["action_id"])]
         return Response(response['data'], status=status.HTTP_200_OK)
 
