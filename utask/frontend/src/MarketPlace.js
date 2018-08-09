@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import TaskCard from './components/TaskCard'
 
-export default class MarketPlace extends Component {
+class MarketPlace extends Component {
   state = {
     tasks: [
       {
@@ -43,3 +43,5 @@ export default class MarketPlace extends Component {
     return this.state.tasks.map(task => <TaskCard task={task} />)
   }
 }
+
+export default MarketPlace

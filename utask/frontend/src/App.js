@@ -8,8 +8,10 @@ import Button from '@material-ui/core/Button'
 import LoginModal from './components/LoginModal'
 import RegisterModal from './components/RegisterModal'
 import MarketPlace from './MarketPlace'
-import TransactionList from './components/TransactionList'
 import { fetchUser } from './actions/account'
+import { Route, Switch } from 'react-router'
+import { withRouter } from 'react-router-dom'
+import { push } from 'connected-react-router'
 
 const styles = theme => ({
   root: {
@@ -35,6 +37,7 @@ const styles = theme => ({
   },
   title: {
     fontSize: 36,
+    cursor: 'pointer',
     fontFamily: 'Shree714',
     background: '-webkit-linear-gradient(293deg, #f171ab, #f35f5f)',
     '-webkit-background-clip': 'text',
@@ -98,11 +101,20 @@ class App extends Component {
               >
                 Create task
               </Button>
-              <Button color="primary" className={classes.button}>
+              <Button
+                color="primary"
+                className={classes.button}
+                onClick={() => this.props.push('/marketplace')}
+              >
                 Marketplace
               </Button>
             </div>
-            <span className={classes.title}>µ t a s k</span>
+            <span
+              onClick={() => this.props.push('/')}
+              className={classes.title}
+            >
+              µ t a s k
+            </span>
             <div>
               <Button
                 color="primary"
@@ -123,7 +135,10 @@ class App extends Component {
           </Toolbar>
         </AppBar>
         <div className={classes.pageContainer}>
-          <MarketPlace />
+          <Switch>
+            <Route exact path="/" render={() => <div>HOMEPAGE</div>} />
+            <Route path="/marketplace" render={() => <MarketPlace />} />
+          </Switch>
         </div>
       </div>
     )
@@ -140,10 +155,13 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  fetchUser: apiClient => dispatch(fetchUser(apiClient))
+  fetchUser: apiClient => dispatch(fetchUser(apiClient)),
+  push: url => dispatch(push(url))
 })
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(withStyles(styles)(App))
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(withStyles(styles)(App))
+)
