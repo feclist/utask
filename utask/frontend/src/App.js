@@ -8,7 +8,7 @@ import Button from '@material-ui/core/Button'
 import LoginModal from './components/LoginModal'
 import RegisterModal from './components/RegisterModal'
 import MarketPlace from './MarketPlace'
-import { fetchUser } from './actions/account'
+import { retrieveMe } from './actions/account'
 import { Route, Switch } from 'react-router'
 import { withRouter } from 'react-router-dom'
 import { push } from 'connected-react-router'
@@ -73,7 +73,7 @@ class App extends Component {
 
   componentDidMount = () => {
     if (window.localStorage.token) {
-      this.props.fetchUser(this.props.apiClient)
+      this.props.retrieveMe(this.props.apiClient)
     }
   }
 
@@ -155,7 +155,7 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  fetchUser: apiClient => dispatch(fetchUser(apiClient)),
+  retrieveMe: apiClient => dispatch(retrieveMe(apiClient)),
   push: url => dispatch(push(url))
 })
 
