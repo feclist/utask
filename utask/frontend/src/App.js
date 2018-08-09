@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
 import { withStyles } from '@material-ui/core/styles'
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
@@ -7,8 +8,8 @@ import Button from '@material-ui/core/Button'
 import LoginModal from './components/LoginModal'
 import RegisterModal from './components/RegisterModal'
 import MarketPlace from './MarketPlace'
-import ApiClient from './utils/ApiClient';
-import TransactionList from './components/TransactionList';
+import TransactionList from './components/TransactionList'
+import { fetchUser } from './actions/account'
 
 const styles = theme => ({
   root: {
@@ -67,19 +68,23 @@ class App extends Component {
     this.setState({ registerModalOpen: false })
   }
 
-  componentWillMount = () => {
-    window.apiClient = new ApiClient('/api')
+  componentDidMount = () => {
+    if (window.localStorage.token) {
+      this.props.fetchUser(this.props.apiClient)
+    }
   }
 
   render() {
-    const { classes } = this.props
+    const { classes, apiClient } = this.props
     return (
       <div className={classes.root}>
         <LoginModal
+          apiClient={apiClient}
           open={this.state.loginModalOpen}
           handleClose={this.handleLoginClose}
         />
         <RegisterModal
+          apiClient={apiClient}
           open={this.state.registerModalOpen}
           handleClose={this.handleRegisterClose}
         />
@@ -119,9 +124,6 @@ class App extends Component {
         </AppBar>
         <div className={classes.pageContainer}>
           <MarketPlace />
-          <TransactionList />
-        </div>
-        <div>
         </div>
       </div>
     )
@@ -132,4 +134,16 @@ App.propTypes = {
   classes: PropTypes.object.isRequired
 }
 
-export default withStyles(styles)(App)
+const mapStateToProps = state => ({
+  apiClient: state.account.apiClient,
+  user: state.account.me
+})
+
+const mapDispatchToProps = dispatch => ({
+  fetchUser: apiClient => dispatch(fetchUser(apiClient))
+})
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withStyles(styles)(App))
