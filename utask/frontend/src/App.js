@@ -13,11 +13,9 @@ import { retrieveMe } from './actions/account'
 import { Route, Switch } from 'react-router'
 import { withRouter } from 'react-router-dom'
 import { push } from 'connected-react-router'
-import ApiClient from './utils/ApiClient';
-import TransactionList from './components/TransactionList';
-import TaskCreation from './components/TaskCreation';
-import Avatar from '@material-ui/core/Avatar';
-import Grid from '@material-ui/core/Grid';
+import TaskCreation from './components/TaskCreation'
+import Avatar from '@material-ui/core/Avatar'
+import Grid from '@material-ui/core/Grid'
 
 const styles = theme => ({
   root: {
@@ -111,6 +109,7 @@ class App extends Component {
                     variant="outlined"
                     color="primary"
                     className={classes.button}
+                    onClick={() => this.props.push('/createtask')}
                   >
                     Create task
                   </Button>
@@ -132,17 +131,30 @@ class App extends Component {
                 </span>
               </Grid>
               <Grid item xs={4}>
-                {window.localStorage.token ?
-                  <div style={{
-                    background: this.state.me ? 'linear-gradient(-69deg, ' + this.state.me.profile.top_color + ', ' + this.state.me.profile.bottom_color + ')' : '',
-                    borderRadius: '50%',
-                    width: 40,
-                    height: 40,
-                    margin: 'auto',
-                  }}>
-                    <Avatar className={classes.avatarIcon}>{this.state.me && this.state.me.username.charAt(0).toUpperCase()}</Avatar>
+                {window.localStorage.token ? (
+                  <div
+                    style={{
+                      background: this.props.me
+                        ? 'linear-gradient(-69deg, ' +
+                          this.props.me.profile.top_color +
+                          ', ' +
+                          this.props.me.profile.bottom_color +
+                          ')'
+                        : '',
+                      borderRadius: '50%',
+                      width: 40,
+                      height: 40,
+                      margin: 'auto',
+                      cursor: 'pointer'
+                    }}
+                    onClick={() => this.props.push('/user')}
+                  >
+                    <Avatar className={classes.avatarIcon}>
+                      {this.props.me &&
+                        this.props.me.username.charAt(0).toUpperCase()}
+                    </Avatar>
                   </div>
-                  :
+                ) : (
                   <div>
                     <Button
                       color="primary"
@@ -150,7 +162,7 @@ class App extends Component {
                       onClick={this.handleLoginOpen}
                     >
                       Sign in
-                </Button>
+                    </Button>
                     <Button
                       variant="outlined"
                       color="primary"
@@ -158,9 +170,9 @@ class App extends Component {
                       onClick={this.handleRegisterOpen}
                     >
                       Get started
-                </Button>
+                    </Button>
                   </div>
-                }
+                )}
               </Grid>
             </Grid>
           </Toolbar>
@@ -169,6 +181,8 @@ class App extends Component {
           <Switch>
             <Route exact path="/" render={() => <div>HOMEPAGE</div>} />
             <Route path="/marketplace" render={() => <MarketPlace />} />
+            <Route path="/createtask" render={() => <TaskCreation />} />
+            <Route path="/user" render={() => <UserDashboard />} />
           </Switch>
         </div>
       </div>
@@ -182,7 +196,7 @@ App.propTypes = {
 
 const mapStateToProps = state => ({
   apiClient: state.account.apiClient,
-  user: state.account.me
+  me: state.account.me
 })
 
 const mapDispatchToProps = dispatch => ({
