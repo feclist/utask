@@ -16,7 +16,6 @@ const styles = theme => ({
   })
 
 const TaskDetail = ({ task, classes }) => {
-    console.log(task)
     return (
         <div>
             <div className={classes.titleLine}>

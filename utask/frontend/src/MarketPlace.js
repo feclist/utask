@@ -60,6 +60,7 @@ class MarketPlace extends Component {
         task.live_tasks.map(l_task => l_task.user).indexOf(me.id) !== -1
       return task
     })
+    console.log('asoifjoiasdjfoidsajoifj')
     console.log(tasks)
     this.setState({ tasks: tasks })
   }
@@ -122,13 +123,14 @@ class MarketPlace extends Component {
           task =>
             task !== undefined && (
               <TaskCard
+                key={task.id}
                 task={task}
                 onDoTask={() => this.onDoTask(task.id)}
                 loading={this.state.loadingTask === task.id}
               />
             )
         )}
-        {this.state.fake_tasks.map(task => <TaskCard task={task} />)}
+        {this.state.fake_tasks.map(task => <TaskCard key={task.id} task={task} />)}
         <Snackbar
           anchorOrigin={{
             vertical: 'bottom',
@@ -149,7 +151,7 @@ class MarketPlace extends Component {
 
 const mapStateToProps = state => ({
   apiClient: state.account.apiClient,
-  user: state.account.me
+  me: state.account.me
 })
 
 const mapDispatchToProps = dispatch => ({

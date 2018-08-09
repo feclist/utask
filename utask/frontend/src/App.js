@@ -16,6 +16,7 @@ import { push } from 'connected-react-router'
 import TaskCreation from './components/TaskCreation'
 import Avatar from '@material-ui/core/Avatar'
 import Grid from '@material-ui/core/Grid'
+import ApiClient from './utils/ApiClient';
 
 const styles = theme => ({
   root: {
@@ -83,6 +84,8 @@ class App extends Component {
   componentDidMount = () => {
     if (window.localStorage.token) {
       this.props.retrieveMe(this.props.apiClient)
+      // TODO: DELETE THIS AFTER DEVELOPMENT
+      window.apiClient = new ApiClient('/api')
     }
   }
 
@@ -147,7 +150,7 @@ class App extends Component {
                       margin: 'auto',
                       cursor: 'pointer'
                     }}
-                    onClick={() => this.props.push('/user')}
+                    onClick={() => this.props.push('/dashboard')}
                   >
                     <Avatar className={classes.avatarIcon}>
                       {this.props.me &&
@@ -181,8 +184,8 @@ class App extends Component {
           <Switch>
             <Route exact path="/" render={() => <div>HOMEPAGE</div>} />
             <Route path="/marketplace" render={() => <MarketPlace />} />
-            <Route path="/createtask" render={() => <TaskCreation />} />
-            <Route path="/user" render={() => <UserDashboard />} />
+            <Route path="/create" render={() => <TaskCreation />} />
+            <Route path="/dashboard" render={() => <UserDashboard />} />
           </Switch>
         </div>
       </div>
