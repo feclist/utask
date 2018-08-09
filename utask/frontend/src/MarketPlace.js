@@ -1,12 +1,13 @@
 import React, { Component } from 'react'
 import TaskCard from './components/TaskCard'
-import { Snackbar } from '../node_modules/@material-ui/core';
+import { Snackbar } from '../node_modules/@material-ui/core'
 import { connect } from 'react-redux'
+import { retrieveMe } from './actions/account'
 
 class MarketPlace extends Component {
   constructor(props) {
     super(props)
-    
+
     this.onDoTask = this.onDoTask.bind(this)
     this.handleSnackClose = this.handleSnackClose.bind(this)
   }
@@ -51,27 +52,50 @@ class MarketPlace extends Component {
     tasks: []
   }
 
-  async componentDidMount() {
-    const {apiClient, me} = this.props
+  async fetchTaskList() {
+    const { apiClient, me } = this.props
     const tasks = await apiClient.tasks.list()
-    tasks.map((task) => {
-      task.activeForUser = task.live_tasks.map((l_task) => l_task.user).indexOf(me.id) !== -1
+    tasks.map(task => {
+      task.activeForUser =
+        task.live_tasks.map(l_task => l_task.user).indexOf(me.id) !== -1
       return task
     })
     console.log(tasks)
     this.setState({ tasks: tasks })
   }
 
+  componentDidMount() {
+    const { apiClient, me, retrieveMe } = this.props
+    if (me != null) {
+      this.fetchTaskList()
+    } else {
+      retrieveMe(apiClient)
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.me !== prevProps.me) {
+      this.fetchTaskList()
+    }
+  }
+
   async onDoTask(taskId) {
-    this.setState({loadingTask: taskId})
+    this.setState({ loadingTask: taskId })
 
     const liveTask = await this.props.apiClient.tasks.startTask(taskId)
     if (liveTask.id) {
       const freshTask = await this.props.apiClient.tasks.retrieve(taskId)
       freshTask.activeForUser = true
       const newTasks = this.state.tasks.slice()
-      console.log(this.state.tasks.findIndex((task) => {console.log(task.id); console.log(liveTask.task)}))
-      const taskIndex = this.state.tasks.findIndex((task) => task.id === liveTask.task)
+      console.log(
+        this.state.tasks.findIndex(task => {
+          console.log(task.id)
+          console.log(liveTask.task)
+        })
+      )
+      const taskIndex = this.state.tasks.findIndex(
+        task => task.id === liveTask.task
+      )
       newTasks[taskIndex] = freshTask
       this.setState({
         tasks: newTasks
@@ -80,32 +104,41 @@ class MarketPlace extends Component {
       this.setState({
         loadingTask: -1,
         snackOpen: true,
-        snackMsg: liveTask.message,
+        snackMsg: liveTask.message
       })
     }
   }
 
   handleSnackClose() {
     this.setState({
-      snackOpen: false,
+      snackOpen: false
     })
   }
 
   render() {
     return (
       <div>
-        {this.state.tasks.map(task => task !== undefined && <TaskCard task={task} onDoTask={() => this.onDoTask(task.id)} loading={this.state.loadingTask === task.id} />)}
+        {this.state.tasks.map(
+          task =>
+            task !== undefined && (
+              <TaskCard
+                task={task}
+                onDoTask={() => this.onDoTask(task.id)}
+                loading={this.state.loadingTask === task.id}
+              />
+            )
+        )}
         {this.state.fake_tasks.map(task => <TaskCard task={task} />)}
         <Snackbar
           anchorOrigin={{
             vertical: 'bottom',
-            horizontal: 'right',
+            horizontal: 'right'
           }}
           open={this.state.snackOpen}
           autoHideDuration={4000}
           onClose={this.handleSnackClose}
           ContentProps={{
-            'aria-describedby': 'message-id',
+            'aria-describedby': 'message-id'
           }}
           message={<span id="message-id">{this.state.snackMsg}</span>}
         />
@@ -120,7 +153,10 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  retrieveMe: apiClient => dispatch(retrieveMe(apiClient)),
+  retrieveMe: apiClient => dispatch(retrieveMe(apiClient))
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(Marketplace)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(MarketPlace)

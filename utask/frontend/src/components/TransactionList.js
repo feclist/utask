@@ -4,28 +4,26 @@ import Divider from '@material-ui/core/Divider'
 import { connect } from 'react-redux'
 import TaskDrawer from './TaskDrawer'
 import { withStyles } from '@material-ui/core/styles'
-import List from '@material-ui/core/List';
-
+import List from '@material-ui/core/List'
 
 const styles = theme => ({
-    root: {
-        width: '100%',
-        backgroundColor: theme.palette.background.paper,
-    }
+  root: {
+    width: '100%',
+    backgroundColor: theme.palette.background.paper
+  }
 })
 
 class TransactionList extends React.Component {
-    constructor(props) {
-        super(props)
-        this.state = {
-            transactions: [],
-            drawerOpen: false,
-            drawerTask: undefined,
-            drawerTransaction: undefined,
-        }
-
-        this.closeTaskDrawer = this.closeTaskDrawer.bind(this)
+  constructor(props) {
+    super(props)
+    this.state = {
+      transactions: [],
+      drawerOpen: false,
+      drawerTask: undefined,
+      drawerTransaction: undefined
     }
+
+    this.closeTaskDrawer = this.closeTaskDrawer.bind(this)
   }
 
   async componentDidMount() {
@@ -38,38 +36,53 @@ class TransactionList extends React.Component {
     })
   }
 
-    triggerTaskDrawer(transaction) {
-        const taskResponse = this.props.apiClient.tasks.retrieve(transaction.task_id).then((task) => {
-            console.log(task)
-            this.setState({ 
-                drawerTask: task,
-                drawerTransaction: transaction
-            })
+  triggerTaskDrawer(transaction) {
+    const taskResponse = this.props.apiClient.tasks
+      .retrieve(transaction.task_id)
+      .then(task => {
+        console.log(task)
+        this.setState({
+          drawerTask: task,
+          drawerTransaction: transaction
         })
-        this.setState({ drawerOpen: true })
-    }
+      })
+    this.setState({ drawerOpen: true })
+  }
 
-    closeTaskDrawer() {
-        this.setState({ drawerOpen: false })
-    }
+  closeTaskDrawer() {
+    this.setState({ drawerOpen: false })
+  }
 
-    render() {
-        const { classes, ...other } = this.props
-        return (
-            <div className={classes.root} style={this.props.style}>
-                <List>
-                    {this.state.transactions.map((transaction) =>
-                        transaction !== undefined && 
-                            <div key={transaction.id}>
-                                <Transaction transaction={transaction} ostId={this.props.me.profile.ost_id} triggerTaskDrawer={() => this.triggerTaskDrawer(transaction)} />
-                                <Divider />
-                            </div>
-                    )}
-                </List>
-                <TaskDrawer open={this.state.drawerOpen} onClose={this.closeTaskDrawer} task={this.state.drawerTask} transaction={this.state.drawerTransaction} />
-            </div>
-        )
-    }
+  render() {
+    const { classes, ...other } = this.props
+    return (
+      <div className={classes.root} style={this.props.style}>
+        <List>
+          {this.state.transactions.map(
+            transaction =>
+              transaction !== undefined && (
+                <div key={transaction.id}>
+                  <Transaction
+                    transaction={transaction}
+                    ostId={this.props.me.profile.ost_id}
+                    triggerTaskDrawer={() =>
+                      this.triggerTaskDrawer(transaction)
+                    }
+                  />
+                  <Divider />
+                </div>
+              )
+          )}
+        </List>
+        <TaskDrawer
+          open={this.state.drawerOpen}
+          onClose={this.closeTaskDrawer}
+          task={this.state.drawerTask}
+          transaction={this.state.drawerTransaction}
+        />
+      </div>
+    )
+  }
 }
 
 const mapStateToProps = state => ({
