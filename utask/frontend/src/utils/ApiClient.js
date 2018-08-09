@@ -71,11 +71,9 @@ export default class ApiClient extends RestClient {
     wallet: {
       retrieve: () => {
         return this.GET('/user/me/wallet/')
-        return body
       },
-      effectiveFunds: async () => {
-        const body = await this.GET('/user/me/wallet/effective_funds')
-        return body
+      effectiveFunds: () => {
+        return this.GET('/user/me/wallet/effective_funds')
       },
       buy: amount => {
         this.POST('/user/me/wallet/buy/' + amount).then(response => {
