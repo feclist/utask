@@ -35,8 +35,6 @@ class DoTask extends Component {
     const response = await this.props.apiClient.tasks.finishTask(
       this.state.liveTask.id
     )
-    console.log('sasdadsdasadsasdasd')
-    console.log(response)
     this.props.push('/dashboard')
   }
 
