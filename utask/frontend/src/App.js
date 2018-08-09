@@ -113,7 +113,7 @@ class App extends Component {
                     variant="outlined"
                     color="primary"
                     className={classes.button}
-                    onClick={() => this.props.push('/createtask')}
+                    onClick={() => this.props.push('/create')}
                   >
                     Create task
                   </Button>
