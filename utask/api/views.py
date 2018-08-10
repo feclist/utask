@@ -17,13 +17,11 @@ class TaskViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)
 
     def create(self, request, *args, **kwargs):
-        print(request.data)
         request.data["user"] = request.user.pk
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         request.data["total_cost"] = int(
             request.data["amount"]) * float(request.data["reward"])
-        print(request.data["total_cost"])
 
         response = get_ost_kit().balances.retrieve(user_id=request.user.profile.ost_id)
 
@@ -77,9 +75,6 @@ class TaskViewSet(viewsets.ModelViewSet):
         user = request.user
         live_tasks = user.livetask_set.all()
         completed_tasks = user.taskreward_set.all()
-        print(live_tasks)
-        print(completed_tasks)
-        print([task_reward.task for task_reward in completed_tasks])
 
         return Response(
             {
@@ -115,7 +110,6 @@ class LiveTaskReadOnlyViewSet(viewsets.ReadOnlyModelViewSet):
                                                       to_user_id=live_task.user.profile.ost_id,
                                                       action_id=39046,
                                                       amount=task.reward)
-        print(response)
         if response["success"]:
             task_reward = TaskReward(transaction_id=response["data"]["transaction"]["id"],
                                      user=live_task.user,
@@ -132,7 +126,6 @@ class LiveTaskReadOnlyViewSet(viewsets.ReadOnlyModelViewSet):
     @action(methods=['get'], detail=True)
     def retrieve_from_task(self, request, pk=None):
         task = Task.objects.get(pk=pk)
-        print(request.user.livetask_set.all())
         return Response(LiveTaskSerializer(request.user.livetask_set.get(task__pk=task.id)).data, status=status.HTTP_200_OK)
 
 
@@ -197,7 +190,6 @@ def buy_tokens_from_company(request, amount):
                                                       action_id=39580,
                                                       amount=amount)
         if response["success"]:
-            print(response["data"])
             return Response({"message": "You boughnt {} muT".format(amount)}, status=status.HTTP_200_OK)
         return Response({"message": "Something went wrong when buying", 'err': response["err"]},
                         status=status.HTTP_409_CONFLICT)
@@ -215,7 +207,6 @@ def sell_tokens_to_company(request, amount):
                                                       action_id=39581,
                                                       amount=amount)
         if response["success"]:
-            print(response["data"])
             return Response({"message": "You sold {} muT".format(amount)}, status=status.HTTP_200_OK)
 
     return Response({"message": "You cannot sell more tokens than you have", 'err': response["err"]},
@@ -224,7 +215,7 @@ def sell_tokens_to_company(request, amount):
 
 @api_view(['GET'])
 def list_transactions(request):
-    response = get_ost_kit().ledger.retrieve(user_id=request.user.profile.ost_id)
+    response = get_ost_kit().ledger.retrieve(user_id=request.user.profile.ost_id, limit=100)
 
     if response["success"]:
         actions = get_ost_kit().actions.list()

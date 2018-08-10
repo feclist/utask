@@ -29,7 +29,7 @@ const MutBalance = ({ amount, classes }) => {
         height="24"
       />
       <Typography className={classes.amount} variant="title">
-        {amount}
+        {Math.round(amount * 10000) / 10000}
       </Typography>
     </div>
   )
