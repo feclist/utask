@@ -18,6 +18,8 @@ import TaskCreation from './components/TaskCreation'
 import Avatar from '@material-ui/core/Avatar'
 import Grid from '@material-ui/core/Grid'
 import ApiClient from './utils/ApiClient'
+import Menu from '@material-ui/core/Menu'
+import MenuItem from '@material-ui/core/MenuItem'
 
 const styles = theme => ({
   root: {
@@ -63,7 +65,8 @@ const styles = theme => ({
 class App extends Component {
   state = {
     loginModalOpen: false,
-    registerModalOpen: false
+    registerModalOpen: false,
+    anchorEl: null
   }
 
   handleLoginOpen = () => {
@@ -82,6 +85,24 @@ class App extends Component {
     this.setState({ registerModalOpen: false })
   }
 
+  handleAvatarClick = event => {
+    this.setState({ anchorEl: event.currentTarget })
+  }
+
+  handleMenuClose = () => {
+    this.setState({ anchorEl: null })
+  }
+
+  handleToDashboard = () => {
+    this.props.push('/dashboard')
+    this.handleMenuClose()
+  }
+
+  handleLogout = () => {
+    this.props.apiClient.users.logout()
+    this.handleMenuClose()
+  }
+
   componentDidMount = () => {
     if (window.localStorage.token) {
       this.props.retrieveMe(this.props.apiClient)
@@ -92,6 +113,7 @@ class App extends Component {
 
   render() {
     const { classes, apiClient } = this.props
+    const { anchorEl } = this.state
     return (
       <div className={classes.root}>
         <LoginModal
@@ -104,6 +126,15 @@ class App extends Component {
           open={this.state.registerModalOpen}
           handleClose={this.handleRegisterClose}
         />
+        <Menu
+          id="simple-menu"
+          anchorEl={anchorEl}
+          open={Boolean(anchorEl)}
+          onClose={this.handleMenuClose}
+        >
+          <MenuItem onClick={this.handleToDashboard}>Dashboard</MenuItem>
+          <MenuItem onClick={this.handleLogout}>Logout</MenuItem>
+        </Menu>
         <AppBar position="static" color="default" className={classes.appBar}>
           <Toolbar className={classes.toolBar}>
             <Grid container spacing={24}>
@@ -151,7 +182,9 @@ class App extends Component {
                       margin: 'auto',
                       cursor: 'pointer'
                     }}
-                    onClick={() => this.props.push('/dashboard')}
+                    aria-owns={anchorEl ? 'simple-menu' : null}
+                    aria-haspopup="true"
+                    onClick={this.handleAvatarClick}
                   >
                     <Avatar className={classes.avatarIcon}>
                       {this.props.me &&

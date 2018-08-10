@@ -42,6 +42,21 @@ class RegisterModal extends Component {
     })
   }
 
+  registerUser = async () => {
+    const { username, firstName, lastName, password1, password2 } = this.state
+    if (password1 === password2) {
+      const form = {
+        username,
+        password: password1,
+        first_name: firstName,
+        last_name: lastName
+      }
+      const response = await this.props.apiClient.users.register(form)
+      console.log(response)
+      this.props.handleClose()
+    }
+  }
+
   render() {
     const { classes, ...other } = this.props
     return (
@@ -49,7 +64,7 @@ class RegisterModal extends Component {
         <form className={classes.formContainer} noValidate>
           <div className={classes.nameContainer}>
             <TextField
-              id="name"
+              id="fname"
               className={classes.nameTextField}
               value={this.state.firstName}
               onChange={this.handleChange('firstName')}
@@ -57,7 +72,7 @@ class RegisterModal extends Component {
               label="First name"
             />
             <TextField
-              id="name"
+              id="lname"
               className={classes.nameTextField}
               value={this.state.lastName}
               onChange={this.handleChange('lastName')}
@@ -66,7 +81,7 @@ class RegisterModal extends Component {
             />
           </div>
           <TextField
-            id="name"
+            id="uname"
             className={classes.textField}
             value={this.state.username}
             onChange={this.handleChange('username')}
@@ -74,7 +89,7 @@ class RegisterModal extends Component {
             label="Username"
           />
           <TextField
-            id="password-input"
+            id="password-input1"
             className={classes.textField}
             type="password"
             margin="normal"
@@ -83,7 +98,7 @@ class RegisterModal extends Component {
             onChange={this.handleChange('password1')}
           />
           <TextField
-            id="password-input"
+            id="password-input2"
             className={classes.textField}
             type="password"
             margin="normal"
@@ -92,7 +107,12 @@ class RegisterModal extends Component {
             onChange={this.handleChange('password2')}
           />
         </form>
-        <Button variant="outlined" color="primary" className={classes.button}>
+        <Button
+          variant="outlined"
+          color="primary"
+          className={classes.button}
+          onClick={this.registerUser}
+        >
           SIGN UP
         </Button>
       </StyledModal>

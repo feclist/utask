@@ -53,6 +53,9 @@ export default class ApiClient extends RestClient {
     logout: () => {
       window.localStorage.removeItem('token')
     },
+    register: form => {
+      return this.POST('/user/create/', form)
+    },
     list: () => {
       this.GET('/user/').then(response => {
         console.log(response)
