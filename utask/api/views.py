@@ -187,7 +187,7 @@ def buy_tokens_from_company(request, amount):
     # This hardcoded check makes sure users won't be able to spam crazy amounts
     # to be added to their wallet, making us go bankrupt :). This will be deleted
     # if we'll actually implement a proper buy-in system.
-    if calc_effective_funds(response["data"]["balance"]["available_balance"], request.user) <= 300 and float(
+    if calc_effective_funds(response["data"]["balance"]["available_balance"], request.user) <= 60 and float(
             amount) <= 50:
         response = get_ost_kit().transactions.execute(from_user_id=config('COMPANY_UUID'),
                                                       to_user_id=request.user.profile.ost_id,
