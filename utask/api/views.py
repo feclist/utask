@@ -1,11 +1,13 @@
 from api.models import Task, LiveTask, TaskReward
 from api.serializers import TaskSerializer, UserSerializer, LiveTaskSerializer, TaskRewardSerializer
+from api.permissions import IsCreatOrIsAuthenticated
 from rest_framework import viewsets, status, permissions, views
 from rest_framework.response import Response
 from rest_framework.decorators import action, api_view
 from decouple import config
 
 from django.contrib.auth.models import User
+from rest_framework.authtoken.models import Token
 from django.conf import settings
 
 from api.utils import flatten_query_set, get_ost_kit, calc_effective_funds
@@ -132,9 +134,9 @@ class LiveTaskReadOnlyViewSet(viewsets.ReadOnlyModelViewSet):
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (IsCreatOrIsAuthenticated,)
 
-    def create(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
@@ -142,10 +144,12 @@ class UserViewSet(viewsets.ModelViewSet):
             name=serializer.validated_data["username"])
 
         if response["success"]:
-            user = serializer.save()
+            user = User.objects.create_user(**request.data)
 
             user.profile.ost_id = response["data"]["user"]["id"]
             user.save()
+
+            return Response({'token': Token.objects.get(user_id=user.pk).key}, status=status.HTTP_200_OK)
 
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)

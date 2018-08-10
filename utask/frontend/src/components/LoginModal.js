@@ -77,7 +77,6 @@ class LoginModal extends Component {
           className={classes.button}
           onClick={() => {
             apiClient.users.login(this.state.name, this.state.password)
-            apiClient.users.list()
           }}
         >
           SIGN IN
