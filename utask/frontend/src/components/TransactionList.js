@@ -17,20 +17,12 @@ class TransactionList extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      transactions: [],
       drawerOpen: false,
       drawerTask: undefined,
       drawerTransaction: undefined
     }
 
     this.closeTaskDrawer = this.closeTaskDrawer.bind(this)
-  }
-
-  async componentDidMount() {
-    const transactionResponse = await this.props.apiClient.me.wallet.transactions.list()
-    this.setState({
-      transactions: transactionResponse.transactions
-    })
   }
 
   triggerTaskDrawer(transaction) {
@@ -54,7 +46,7 @@ class TransactionList extends React.Component {
     return (
       <div className={classes.root} style={this.props.style}>
         <List>
-          {this.state.transactions.map(
+          {this.props.transactions.map(
             transaction =>
               transaction !== undefined && (
                 <div key={transaction.id}>

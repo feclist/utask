@@ -23,4 +23,5 @@ urlpatterns = [
     url(r'^api/user/me/wallet/transactions/(?P<transaction_id>[0-9a-z\-]+)$', views.retrieve_transaction),
     url(r'^api/user/me/wallet/transactions', views.list_transactions),
     url(r'^api/user/me/wallet', views.wallet_detail),
+    url(r'^api/user/me/tasks', views.list_tasks_from_user),
 ]

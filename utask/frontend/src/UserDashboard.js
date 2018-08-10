@@ -4,7 +4,10 @@ import { Tabs, Grid } from '../node_modules/@material-ui/core';
 import Tab from '@material-ui/core/Tab';
 import TransactionList from './components/TransactionList';
 import TaskList from './components/TaskList';
-import Wallet from './components/Wallet';
+import UserDetails from './components/UserDetails';
+import { connect } from 'react-redux'
+import TaskWrapper from './components/TaskWrapper'
+import TaskDetail from './components/TaskDetail'
 
 
 const styles = theme => ({
@@ -18,12 +21,43 @@ class UserDashboard extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            value: 0
+            tabValue: 0,
+            transactions: [],
+            liveTasks: [],
+            completedTasks: [],
+            myTasks: [],
+            wallet: undefined,
         }
     }
 
+    async componentDidMount() {
+        const transactionResponse = await this.props.apiClient.me.wallet.transactions.list()
+        this.setState({
+            transactions: transactionResponse.transactions
+        })
+
+        // MERGE THIS WIT HTHE ABOVE
+        const taskResponse = await this.props.apiClient.tasks.userTasks()
+        this.setState({
+            liveTasks: taskResponse.live_tasks.map(task => {
+                task.activeForUser = true
+                return task
+            }),
+            completedTasks: taskResponse.completed_tasks
+        })
+
+        // MERGE THIS WIT HTHE ABOVE
+        const ownTaskResponse = await this.props.apiClient.me.tasks.list()
+        this.setState({
+            myTasks: ownTaskResponse
+        })
+
+        const wallet = await this.props.apiClient.me.wallet.retrieve()
+        if (wallet.balance !== undefined) this.setState({ wallet: wallet.balance })
+    }
+
     handleChange = (event, value) => {
-        this.setState({ value: value });
+        this.setState({ tabValue: value });
     }
 
     render() {
@@ -33,7 +67,7 @@ class UserDashboard extends React.Component {
                 <Grid container spacing={16}>
                     <Grid item xs={8}>
                         <Tabs
-                            value={this.state.value}
+                            value={this.state.tabValue}
                             onChange={this.handleChange}
                             indicatorColor="primary"
                             textColor="primary"
@@ -43,11 +77,24 @@ class UserDashboard extends React.Component {
                             <Tab label="Your Tasks" value={1} />
                             <Tab label="Transaction history" value={2} />
                         </Tabs>
-                        <TaskList style={{ display: this.state.value === 0 ? 'block' : 'none' }} />
-                        <TransactionList style={{ display: this.state.value === 2 ? 'block' : 'none' }} />
+                        <TaskList style={{ display: this.state.tabValue === 0 ? 'block' : 'none' }} liveTasks={this.state.liveTasks} completedTasks={this.state.completedTasks} />
+                        <div style={{ display: this.state.tabValue === 1 ? 'block' : 'none' }}>
+                            {this.state.myTasks && this.state.myTasks.map((task) =>
+                                <TaskWrapper key={task.id}>
+                                    <TaskDetail task={task} />
+                                </TaskWrapper>
+                            )}
+                        </div>
+                        <TransactionList style={{ display: this.state.tabValue === 2 ? 'block' : 'none' }} transactions={this.state.transactions} />
                     </Grid>
                     <Grid item xs={4}>
-                        <Wallet />
+                        <UserDetails
+                            liveTasks={this.state.liveTasks}
+                            completedTasks={this.state.completedTasks}
+                            transactions={this.state.transactions}
+                            myTasks={this.state.myTasks}
+                            wallet={this.state.wallet}
+                        />
                     </Grid>
                 </Grid>
             </div>
@@ -55,4 +102,14 @@ class UserDashboard extends React.Component {
     }
 }
 
-export default withStyles(styles)(UserDashboard);
+const mapStateToProps = state => ({
+    apiClient: state.account.apiClient,
+    me: state.account.me
+})
+
+const mapDispatchToProps = dispatch => ({})
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(withStyles(styles)(UserDashboard))
