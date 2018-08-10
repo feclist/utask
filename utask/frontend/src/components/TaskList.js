@@ -11,6 +11,7 @@ import TaskCard from './TaskCard'
 import TaskWrapper from './TaskWrapper'
 import TaskDetail from './TaskDetail'
 import { connect } from 'react-redux'
+import { push } from 'connected-react-router'
 
 const styles = theme => ({
   root: {
@@ -35,7 +36,7 @@ class TaskList extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      loadingTask: -1,
+      loadingTask: -1
     }
   }
 
@@ -53,6 +54,7 @@ class TaskList extends React.Component {
                   key={task.id}
                   task={task}
                   onDoTask={() => this.onDoTask(task.id)}
+                  onResume={() => this.props.push(`/do/${task.id}`)}
                   loading={this.state.loadingTask === task.id}
                 />
               )
@@ -79,4 +81,11 @@ const mapStateToProps = state => ({
   apiClient: state.account.apiClient
 })
 
-export default connect(mapStateToProps)(withStyles(styles)(TaskList))
+const mapDispatchToProps = dispatch => ({
+  push: url => dispatch(push(url))
+})
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withStyles(styles)(TaskList))

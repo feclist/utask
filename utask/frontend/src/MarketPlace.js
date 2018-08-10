@@ -56,12 +56,25 @@ class MarketPlace extends Component {
   async fetchTaskList() {
     const { apiClient, me } = this.props
     const tasks = await apiClient.tasks.list()
+    const ownTasks = await apiClient.me.tasks.list()
+    const { completed_tasks } = await apiClient.tasks.userTasks()
     tasks.map(task => {
       task.activeForUser =
         task.live_tasks.map(l_task => l_task.user).indexOf(me.id) !== -1
       return task
     })
-    this.setState({ tasks: tasks })
+    const otherOnesTasks = tasks.filter(
+      task => ownTasks.map(ownTasks => ownTasks.id).indexOf(task.id) === -1
+    )
+    const notDoneTasks = otherOnesTasks.filter(
+      task =>
+        completed_tasks
+          .map(completedTask => completedTask.id)
+          .indexOf(task.id) === -1
+    )
+    this.setState({
+      tasks: notDoneTasks
+    })
   }
 
   componentDidMount() {

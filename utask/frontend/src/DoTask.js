@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 import { retrieveMe } from './actions/account'
 import { withStyles } from '@material-ui/core/styles'
 import Button from '@material-ui/core/Button'
+import { push } from 'connected-react-router'
 
 const styles = theme => ({
   root: {
@@ -18,16 +19,24 @@ const styles = theme => ({
 
 class DoTask extends Component {
   state = {
-    task: null
+    task: null,
+    liveTaskId: 0
   }
 
   async componentDidMount() {
     const { apiClient, match } = this.props
     const task = await apiClient.tasks.retrieve(match.params.taskId)
     this.setState({ task: task })
+    const liveTask = await apiClient.tasks.retrieveFromTask(match.params.taskId)
+    this.setState({ liveTask: liveTask })
   }
 
-  finishTask = () => {}
+  finishTask = async () => {
+    const response = await this.props.apiClient.tasks.finishTask(
+      this.state.liveTask.id
+    )
+    this.props.push('/dashboard')
+  }
 
   render() {
     const { classes } = this.props
@@ -53,12 +62,11 @@ class DoTask extends Component {
 }
 
 const mapStateToProps = state => ({
-  apiClient: state.account.apiClient,
-  me: state.account.me
+  apiClient: state.account.apiClient
 })
 
 const mapDispatchToProps = dispatch => ({
-  retrieveMe: apiClient => dispatch(retrieveMe(apiClient))
+  push: url => dispatch(push(url))
 })
 
 export default connect(
