@@ -3,6 +3,7 @@ import TaskCard from './components/TaskCard'
 import { Snackbar } from '../node_modules/@material-ui/core'
 import { connect } from 'react-redux'
 import { retrieveMe } from './actions/account'
+import { push } from 'connected-react-router'
 
 class MarketPlace extends Component {
   constructor(props) {
@@ -80,27 +81,16 @@ class MarketPlace extends Component {
     }
   }
 
+  toDoTask(taskId) {
+    this.props.push(`/do/${taskId}`)
+  }
+
   async onDoTask(taskId) {
     this.setState({ loadingTask: taskId })
 
     const liveTask = await this.props.apiClient.tasks.startTask(taskId)
     if (liveTask.id) {
-      const freshTask = await this.props.apiClient.tasks.retrieve(taskId)
-      freshTask.activeForUser = true
-      const newTasks = this.state.tasks.slice()
-      console.log(
-        this.state.tasks.findIndex(task => {
-          console.log(task.id)
-          console.log(liveTask.task)
-        })
-      )
-      const taskIndex = this.state.tasks.findIndex(
-        task => task.id === liveTask.task
-      )
-      newTasks[taskIndex] = freshTask
-      this.setState({
-        tasks: newTasks
-      })
+      this.toDoTask(taskId)
     } else {
       this.setState({
         loadingTask: -1,
@@ -126,11 +116,11 @@ class MarketPlace extends Component {
                 key={task.id}
                 task={task}
                 onDoTask={() => this.onDoTask(task.id)}
+                onResume={() => this.toDoTask(task.id)}
                 loading={this.state.loadingTask === task.id}
               />
             )
         )}
-        {this.state.fake_tasks.map(task => <TaskCard key={task.id} task={task} />)}
         <Snackbar
           anchorOrigin={{
             vertical: 'bottom',
@@ -155,7 +145,8 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  retrieveMe: apiClient => dispatch(retrieveMe(apiClient))
+  retrieveMe: apiClient => dispatch(retrieveMe(apiClient)),
+  push: url => dispatch(push(url))
 })
 
 export default connect(

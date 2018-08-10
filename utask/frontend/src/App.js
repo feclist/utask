@@ -9,6 +9,7 @@ import LoginModal from './components/LoginModal'
 import RegisterModal from './components/RegisterModal'
 import UserDashboard from './UserDashboard'
 import MarketPlace from './MarketPlace'
+import DoTask from './DoTask'
 import { retrieveMe } from './actions/account'
 import { Route, Switch } from 'react-router'
 import { withRouter } from 'react-router-dom'
@@ -16,7 +17,7 @@ import { push } from 'connected-react-router'
 import TaskCreation from './components/TaskCreation'
 import Avatar from '@material-ui/core/Avatar'
 import Grid from '@material-ui/core/Grid'
-import ApiClient from './utils/ApiClient';
+import ApiClient from './utils/ApiClient'
 
 const styles = theme => ({
   root: {
@@ -186,6 +187,7 @@ class App extends Component {
             <Route path="/marketplace" render={() => <MarketPlace />} />
             <Route path="/create" render={() => <TaskCreation />} />
             <Route path="/dashboard" render={() => <UserDashboard />} />
+            <Route path="/do/:taskId" component={DoTask} />
           </Switch>
         </div>
       </div>

@@ -8,9 +8,9 @@ import LinearProgress from '@material-ui/core/LinearProgress'
 import MutBalance from './MutBalance'
 
 import moment from 'moment'
-import { CircularProgress } from '../../node_modules/@material-ui/core';
-import TaskDetail from './TaskDetail';
-import TaskWrapper from './TaskWrapper';
+import { CircularProgress } from '../../node_modules/@material-ui/core'
+import TaskDetail from './TaskDetail'
+import TaskWrapper from './TaskWrapper'
 
 const styles = theme => ({
   root: {
@@ -45,7 +45,7 @@ const getLinearProgressValues = task => {
   return { value, valueBuffer }
 }
 
-const TaskCard = ({ task, onDoTask, loading, classes }) => {
+const TaskCard = ({ task, onDoTask, onResume, loading, classes }) => {
   const linProValues = getLinearProgressValues(task)
   return (
     <TaskWrapper>
@@ -55,21 +55,34 @@ const TaskCard = ({ task, onDoTask, loading, classes }) => {
         variant="buffer"
         className={classes.progress}
       />
-      {task.activeForUser ?
+      {task.activeForUser ? (
         <div className={classes.buttonGroup}>
-          <Button variant="outlined" color="primary" className={classes.button}>
+          <Button
+            variant="outlined"
+            color="primary"
+            className={classes.button}
+            onClick={onResume}
+          >
             Resume
-          </Button><Button variant="outlined" color="secondary" className={classes.button}>
+          </Button>
+          <Button
+            variant="outlined"
+            color="secondary"
+            className={classes.button}
+          >
             Cancel
           </Button>
-        </div> :
-        <Button variant="outlined" color="primary" className={classes.button} onClick={onDoTask}>
-          { !loading ? 'Do Task' :
-          <CircularProgress size={14} />
-          }
+        </div>
+      ) : (
+        <Button
+          variant="outlined"
+          color="primary"
+          className={classes.button}
+          onClick={onDoTask}
+        >
+          {!loading ? 'Do Task' : <CircularProgress size={14} />}
         </Button>
-      }
-
+      )}
     </TaskWrapper>
   )
 }

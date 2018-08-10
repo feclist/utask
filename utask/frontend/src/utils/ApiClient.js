@@ -14,28 +14,33 @@ export default class ApiClient extends RestClient {
       const body = await this.GET('/task/')
       return body
     },
-    retrieve: async (id) => {
+    retrieve: async id => {
       const body = await this.GET('/task/' + id)
       return body
     },
-    create: async (data) => {
+    create: async data => {
       const body = await this.POST('/task/', data)
       return body
     },
-    startTask: async (id) => {
+    startTask: async id => {
       const body = await this.GET('/task/' + id + '/start_task/')
       return body
+    },
+    finishTask: id => {
+      return this.GET(`live_task/complete_task/${id}`)
     },
     userTasks: async () => {
       const body = await this.GET('/task/retrieve_user_tasks')
       return body
     },
-    retrieveFromLiveTask: async (id) => {
+    retrieveFromLiveTask: async id => {
       const body = await this.GET('/task/' + id + '/retrieve_from_live_task')
       return body
     },
-    retrieveFromCompletedTask: async (id) => {
-      const body = await this.GET('/task/' + id + '/retrieve_from_completed_task')
+    retrieveFromCompletedTask: async id => {
+      const body = await this.GET(
+        '/task/' + id + '/retrieve_from_completed_task'
+      )
       return body
     }
   }
@@ -79,8 +84,8 @@ export default class ApiClient extends RestClient {
         const body = await this.GET('/user/me/wallet/effective_funds')
         return body
       },
-      buy: (amount) => {
-        this.POST('/user/me/wallet/buy/' + amount).then((response) => {
+      buy: amount => {
+        this.POST('/user/me/wallet/buy/' + amount).then(response => {
           console.log(response)
         })
       },
