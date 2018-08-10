@@ -59,6 +59,12 @@ class UserDashboard extends React.Component {
     this.setState({ tabValue: value })
   }
 
+  updateWallet = async () => {
+    const wallet = await this.props.apiClient.me.wallet.retrieve()
+    console.log(wallet)
+    if (wallet.balance !== undefined) this.setState({ wallet: wallet.balance })
+  }
+
   render() {
     const { classes } = this.props
     return (
@@ -103,6 +109,7 @@ class UserDashboard extends React.Component {
               transactions={this.state.transactions}
               myTasks={this.state.myTasks}
               wallet={this.state.wallet}
+              updateWallet={this.updateWallet}
             />
           </Grid>
         </Grid>
