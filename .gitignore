@@ -2,4 +2,7 @@ venv
 node_modules
 .idea
 .env
-src
+/src
+__pycache__
+.DS_Store
+.vscode
