@@ -35,8 +35,16 @@ class LoginModal extends Component {
     })
   }
 
+  handleLogin = async () => {
+    const response = await this.props.apiClient.users.login(
+      this.state.name,
+      this.state.password
+    )
+    if ('token' in response) this.props.handleClose()
+  }
+
   render() {
-    const { classes, apiClient, ...other } = this.props
+    const { classes, ...other } = this.props
     return (
       <StyledModal {...other} title="SIGN IN">
         <form className={classes.formContainer} noValidate>
@@ -76,7 +84,7 @@ class LoginModal extends Component {
           color="primary"
           className={classes.button}
           onClick={() => {
-            apiClient.users.login(this.state.name, this.state.password)
+            this.handleLogin()
           }}
         >
           SIGN IN

@@ -52,7 +52,7 @@ class RegisterModal extends Component {
         last_name: lastName
       }
       const response = await this.props.apiClient.users.register(form)
-      console.log(response)
+      if ('token' in response) window.localStorage.token = response.token
       this.props.handleClose()
     }
   }
